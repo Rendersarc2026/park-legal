@@ -1,55 +1,44 @@
 'use client';
 
-import { Quote } from 'lucide-react';
+import { Quote, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function Testimonials() {
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="py-20 bg-[#F3F4F6]">
+      <div className="max-w-4xl mx-auto px-6 text-center">
         
-        <div className="text-center mb-16 relative">
-             <h2 className="text-3xl font-serif text-text-main inline-block bg-white px-4 relative z-10">Client Reviews</h2>
-             <div className="absolute top-1/2 left-0 w-full h-px bg-gray-200 -z-0"></div>
+        <h2 className="text-4xl font-serif mb-12 text-[#1f2937]">
+          <span className="text-[#EF4444]">Testimonials</span> Of Clients
+        </h2>
+        
+        <div className="flex justify-center mb-8">
+             <Quote className="text-[#1f2937]" size={40} fill="currentColor" />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="max-w-3xl mx-auto"
+        >
+          <p className="text-[#4B5563] text-lg leading-relaxed mb-8 font-serif">
+            Jyotsna provided my company with outstanding legal assistance. Her work was thoughtful, timely and complete. Her advice is pragmatic and she is able to quickly understand and help resolve issues faced by foreign entities seeking to do business in India. I would highly recommend her – most particularly in connection with merger and acquisition legal services.
+          </p>
           
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="bg-gray-50 p-10 rounded-sm relative"
-          >
-            <Quote className="text-brand-primary-dark/20 absolute top-6 left-6" size={48} />
-            <p className="text-text-muted italic relative z-10 mb-6 pt-6">
-              "Park Legal provided clear, reliable guidance every step of the way."
-            </p>
-            <div className="text-right">
-              <span className="text-sm font-semibold text-text-main">- A.R.</span>
-            </div>
-            <Quote className="text-brand-primary-dark/20 absolute bottom-6 right-6 rotate-180" size={48} />
-          </motion.div>
+          <div className="flex justify-center gap-1 mb-6">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className="text-[#EF4444]" size={20} fill="currentColor" />
+            ))}
+          </div>
 
-          <motion.div 
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-gray-50 p-10 rounded-sm relative"
-          >
-             <Quote className="text-brand-primary-dark/20 absolute top-6 left-6" size={48} />
-             <p className="text-text-muted italic relative z-10 mb-6 pt-6">
-              "Professional and trustworthy. Highly recommend Park Legal."
-            </p>
-            <div className="text-right">
-              <span className="text-sm font-semibold text-text-main">- M.S.</span>
-            </div>
-             <Quote className="text-brand-primary-dark/20 absolute bottom-6 right-6 rotate-180" size={48} />
-          </motion.div>
+          <div className="text-center">
+            <h3 className="text-xl font-bold text-[#1f2937] mb-1">Debbie Rosen</h3>
+            <p className="text-[#9CA3AF] text-sm">Vice President/CLO at Standex International</p>
+          </div>
 
-        </div>
+        </motion.div>
 
       </div>
     </section>

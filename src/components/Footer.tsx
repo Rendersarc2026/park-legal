@@ -29,7 +29,7 @@ export default function Footer() {
           <span className="hidden md:inline">|</span>
           <Link href="#" className="hover:text-text-main">Privacy Policy</Link>
           <span className="hidden md:inline">|</span>
-          <Link href="#" className="hover:text-text-main">info@parklegal.com</Link>
+          <Link href="mailto:parklegalkochi@gmail.com" className="hover:text-text-main">parklegalkochi@gmail.com</Link>
         </div>
 
       </div>
