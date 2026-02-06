@@ -8,9 +8,20 @@ export default function Footer() {
       {/* Bottom Bar */}
       <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
         
-        <div className="mb-4 md:mb-0">
-          <span className="font-serif text-lg text-text-main mr-4">Park Legal</span>
-          <span>123 Main Street, Suite 400, Cityville, CA 12345</span>
+        <div className="mb-4 md:mb-0 flex flex-col items-center md:items-start text-center md:text-left">
+          <span className="font-serif text-lg text-text-main mb-2">Park Legal</span>
+          <span className="max-w-md mx-auto md:mx-0 leading-relaxed">
+            1st Floor, Johns Corner Building, Judges Ave, GCDA LIG Colony, 
+            Ernakulam North, Kathrikadavu, Kaloor, Kochi, Ernakulam, Kerala 682017
+          </span>
+          <Link 
+            href="https://share.google/RA8iNjjGzmtfZquIz" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-brand-primary hover:underline text-xs mt-2 inline-flex items-center"
+          >
+            View on Map
+          </Link>
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 items-center">

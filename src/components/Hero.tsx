@@ -5,11 +5,10 @@ export default function Hero() {
     <section className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
-         {/* Using a placeholder image that matches the clean, office aesthetic */}
         <div className="relative w-full h-full bg-gray-200">
              <Image 
-                src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2301&auto=format&fit=crop"
-                alt="Modern Office"
+                src="/assets/park-label-hero.png"
+                alt="Park Legal Office"
                 fill
                 className="object-cover opacity-80"
                 priority

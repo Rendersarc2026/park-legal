@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
-import MissionVisionValues from "@/components/MissionVisionValues";
+
 import NewsArticles from "@/components/NewsArticles";
 import Expertise from "@/components/Expertise";
 import Testimonials from "@/components/Testimonials";
@@ -11,7 +11,7 @@ export default function Home() {
     <main className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <Header />
       <Hero />
-      <MissionVisionValues />
+
       <NewsArticles />
       <Expertise />
       <Testimonials />

@@ -32,9 +32,9 @@ export default function NewsArticles() {
         
         <div className="flex justify-between items-end mb-12 pb-4 border-b border-gray-200">
           <h2 className="text-3xl font-serif text-text-main">News & Articles</h2>
-          <Link href="#" className="text-xs uppercase tracking-widest text-text-muted hover:text-brand-primary-dark transition-colors">
+          {/* <Link href="#" className="text-xs uppercase tracking-widest text-text-muted hover:text-brand-primary-dark transition-colors">
             View All Articles {'>'}
-          </Link>
+          </Link> */}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
