@@ -1,5 +1,8 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 const articles = [
   {
@@ -37,9 +40,22 @@ export default function NewsArticles() {
           </Link> */}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {articles.map((article) => (
-            <div key={article.id} className="group bg-white shadow-sm hover:shadow-md transition-all duration-300">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.6, staggerChildren: 0.2 }}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+        >
+          {articles.map((article, index) => (
+            <motion.div 
+              key={article.id} 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="group bg-white shadow-sm hover:shadow-md transition-all duration-300"
+            >
               <div className="relative h-48 w-full overflow-hidden">
                 <Image 
                   src={article.image} 
@@ -59,9 +75,9 @@ export default function NewsArticles() {
                   {article.date}
                 </span>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
       </div>
     </section>
