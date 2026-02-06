@@ -26,15 +26,21 @@ export default function Hero() {
       </motion.div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-[-5%]">
-        <motion.h1 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.5 }}
-          className="text-6xl md:text-8xl text-text-main mb-6 drop-shadow-sm tracking-tight"
+      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-[-3%] flex flex-col items-center">
+        <motion.div
+           initial={{ opacity: 0, y: 20 }}
+           animate={{ opacity: 1, y: 0 }}
+           transition={{ duration: 0.8, delay: 0.3 }}
+           className="mb-0"
         >
-          Park Legal
-        </motion.h1>
+            <Image 
+              src="/assets/logo.svg" 
+              alt="Park Legal Logo" 
+              width={700} 
+              height={120} 
+              className="w-80 md:w-[600px] h-auto"
+            />
+        </motion.div>
         <motion.p 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

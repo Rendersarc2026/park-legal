@@ -74,26 +74,26 @@ export default function Header() {
         </button>
 
         {/* Mobile Navigation Dropdown */}
-        <div className={`absolute top-full left-0 w-full bg-white border-t border-gray-100 shadow-lg md:hidden transition-all duration-300 ease-in-out overflow-hidden ${isMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}>
+        <div className={`absolute top-full left-0 w-full bg-white/95 backdrop-blur-md shadow-lg md:hidden transition-all duration-300 ease-in-out overflow-hidden ${isMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}>
           <nav className="flex flex-col p-6 gap-4 text-sm uppercase tracking-widest text-text-muted">
             <Link 
               href="/" 
               onClick={toggleMenu} 
-              className={`hover:text-brand-primary-dark transition-colors border-b border-gray-100 pb-2 ${isActive('/') ? 'text-brand-primary font-bold' : ''}`}
+              className={`hover:text-red-700 transition-colors border-b border-gray-100 pb-2 ${isActive('/') ? 'text-red-600 font-bold' : ''}`}
             >
               Home
             </Link>
             <Link 
               href="/about" 
               onClick={toggleMenu} 
-              className={`hover:text-brand-primary-dark transition-colors border-b border-gray-100 pb-2 ${isActive('/about') ? 'text-brand-primary font-bold' : ''}`}
+              className={`hover:text-red-700 transition-colors border-b border-gray-100 pb-2 ${isActive('/about') ? 'text-red-600 font-bold' : ''}`}
             >
               About
             </Link>
             <Link 
               href="/contact" 
               onClick={toggleMenu} 
-              className={`hover:text-brand-primary-dark transition-colors pb-2 ${isActive('/contact') ? 'text-brand-primary font-bold' : ''}`}
+              className={`hover:text-red-700 transition-colors pb-2 ${isActive('/contact') ? 'text-red-600 font-bold' : ''}`}
             >
               Contact
             </Link>
