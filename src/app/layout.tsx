@@ -13,8 +13,44 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Park Legal",
-  description: "Legal Services you can trust.",
+  title: {
+    default: "Park Legal | Professional Legal Services in Kochi",
+    template: "%s | Park Legal"
+  },
+  description: "Park Legal is a premier law firm in Kochi, providing expert legal counsel and representation with integrity and precision. Specializing in corporate, litigation, and personal legal services.",
+  keywords: ["Law Firm Kochi", "Legal Services Ernakulam", "Advocates Kochi", "Legal Counsel Kerala", "Park Legal", "Kochi Lawyers", "High Court Advocates"],
+  authors: [{ name: "Park Legal" }],
+  creator: "Park Legal",
+  publisher: "Park Legal",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    title: "Park Legal | Professional Legal Services in Kochi",
+    description: "Expert legal counsel and representation with integrity and precision. Specializing in corporate, litigation, and personal legal services.",
+    url: "https://parklegal.in",
+    siteName: "Park Legal",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Park Legal | Professional Legal Services in Kochi",
+    description: "Expert legal counsel and representation with integrity and precision.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 export default function RootLayout({
