@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,81 +25,86 @@ export default function Header() {
 
   const isActive = (path: string) => pathname === path;
 
+  const navLinks = [
+    { name: 'Home', path: '/' },
+    { name: 'About', path: '/about' },
+    { name: 'Contact', path: '/contact' },
+  ];
+
   return (
     <>
       <header 
-        className={`fixed top-0 left-0 w-full z-50 px-6 md:px-8 flex justify-between items-center transition-all duration-300 group
-          ${isScrolled || isMenuOpen ? 'bg-white/50 backdrop-blur-md shadow-md py-3 md:py-4' : 'bg-transparent py-4 md:py-6'}
+        className={`fixed top-0 left-0 w-full z-50 px-6 md:px-12 flex justify-between items-center transition-all duration-500 font-sans
+          ${isScrolled || isMenuOpen ? 'bg-white/80 backdrop-blur-xl shadow-sm py-4' : 'bg-transparent py-8'}
         `}
       >
-        <Link href="/" className="z-50 relative">
-          <Image 
-            src="/assets/logo.svg" 
-            alt="Park Legal Logo" 
-            width={180} 
-            height={60} 
-            className={`w-auto object-contain transition-all duration-300 ${isScrolled || isMenuOpen ? 'h-10 md:h-12' : 'h-12 md:h-16'}`}
-            priority
-          />
+        <Link href="/" className="z-50 relative group">
+          <div className="relative">
+            <Image 
+              src="/assets/logo.svg" 
+              alt="Park Legal Logo" 
+              width={360} 
+              height={120} 
+              className={`w-auto object-contain transition-all duration-500 ${isScrolled || isMenuOpen ? 'h-20' : 'h-24'}`}
+              priority
+            />
+          </div>
         </Link>
         
         {/* Desktop Navigation */}
-        <nav className={`hidden md:flex gap-8 text-sm uppercase tracking-widest transition-colors duration-300 ${isScrolled ? 'text-black' : 'text-black'}`}>
-          <Link 
-            href="/" 
-            className={`transition-colors hover:text-red-700 ${isActive('/') ? 'text-red-600 font-bold' : ''}`}
-          >
-            Home
-          </Link>
-          <Link 
-            href="/about" 
-            className={`transition-colors hover:text-red-700 ${isActive('/about') ? 'text-red-600 font-bold' : ''}`}
-          >
-            About
-          </Link>
-          <Link 
-            href="/contact" 
-            className={`transition-colors hover:text-red-700 ${isActive('/contact') ? 'text-red-600 font-bold' : ''}`}
-          >
-            Contact
-          </Link>
+        <nav className="hidden md:flex gap-12 items-center">
+          {navLinks.map((link) => (
+            <Link 
+              key={link.path}
+              href={link.path} 
+              className={`relative text-sm uppercase tracking-[0.2em] font-bold transition-colors duration-300 hover:text-[#C53030] ${isActive(link.path) ? 'text-[#C53030]' : 'text-[#333333]'}`}
+            >
+              {link.name}
+              {isActive(link.path) && (
+                <motion.div 
+                  layoutId="nav-underline"
+                  className="absolute -bottom-2 left-0 w-full h-0.5 bg-[#C53030]"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
+            </Link>
+          ))}
         </nav>
 
         {/* Mobile Menu Button */}
         <button 
           onClick={toggleMenu}
-          className={`md:hidden z-50 relative p-2 transition-colors ${isScrolled || isMenuOpen ? 'text-text-muted' : 'text-black'}`}
+          className={`md:hidden z-50 relative p-2 rounded-full transition-all duration-300 ${isMenuOpen ? 'bg-brand-primary text-white' : 'bg-gray-100 text-[#333333]'}`}
           aria-label="Toggle menu"
         >
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
         </button>
 
-        {/* Mobile Navigation Dropdown */}
-        <div className={`absolute top-full left-0 w-full bg-white/95 backdrop-blur-md shadow-lg md:hidden transition-all duration-300 ease-in-out overflow-hidden ${isMenuOpen ? 'max-h-64 opacity-100' : 'max-h-0 opacity-0'}`}>
-          <nav className="flex flex-col p-6 gap-4 text-sm uppercase tracking-widest text-text-muted">
-            <Link 
-              href="/" 
-              onClick={toggleMenu} 
-              className={`hover:text-red-700 transition-colors border-b border-gray-100 pb-2 ${isActive('/') ? 'text-red-600 font-bold' : ''}`}
+        {/* Mobile Navigation Overlay */}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="absolute top-full left-0 w-full bg-white shadow-2xl md:hidden overflow-hidden rounded-b-[2rem]"
             >
-              Home
-            </Link>
-            <Link 
-              href="/about" 
-              onClick={toggleMenu} 
-              className={`hover:text-red-700 transition-colors border-b border-gray-100 pb-2 ${isActive('/about') ? 'text-red-600 font-bold' : ''}`}
-            >
-              About
-            </Link>
-            <Link 
-              href="/contact" 
-              onClick={toggleMenu} 
-              className={`hover:text-red-700 transition-colors pb-2 ${isActive('/contact') ? 'text-red-600 font-bold' : ''}`}
-            >
-              Contact
-            </Link>
-          </nav>
-        </div>
+              <nav className="flex flex-col p-8 gap-6">
+                {navLinks.map((link) => (
+                  <Link 
+                    key={link.path}
+                    href={link.path} 
+                    onClick={toggleMenu} 
+                    className={`text-xl font-bold transition-colors ${isActive(link.path) ? 'text-[#C53030]' : 'text-[#333333]'}`}
+                  >
+                    {link.name}
+                  </Link>
+                ))}
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
     </>
   );

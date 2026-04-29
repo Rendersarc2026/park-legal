@@ -1,33 +1,75 @@
-import { Building2, Home, FileText, Gavel, Users, Briefcase } from 'lucide-react';
+'use client';
+
+import { motion } from 'framer-motion';
+import { Building2, Home, FileText, Gavel, Users, Briefcase, ArrowUpRight } from 'lucide-react';
 
 const services = [
-  { icon: Building2, label: "Corporate Law" },
-  { icon: Gavel, label: "Litigation & Dispute Resolution" },
-  { icon: Home, label: "Real Estate Law" },
-  { icon: Users, label: "Family Law" },
-  { icon: FileText, label: "Estate Planning" },
-  { icon: Briefcase, label: "Employment Law" },
+  { icon: Building2, label: "Corporate Law", description: "Navigating complex business regulations and corporate structures." },
+  { icon: Gavel, label: "Litigation & Dispute Resolution", description: "Strong representation in court and strategic conflict management." },
+  { icon: Home, label: "Real Estate Law", description: "Expert guidance for property transactions and development." },
+  { icon: Users, label: "Family Law", description: "Compassionate legal support for sensitive personal matters." },
+  { icon: FileText, label: "Estate Planning", description: "Securing your legacy through meticulous planning and documentation." },
+  { icon: Briefcase, label: "Employment Law", description: "Balancing rights and responsibilities in the workplace." },
 ];
+
+const containerVariants = {
+  initial: {},
+  whileInView: {
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+};
+
+const itemVariants = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0 },
+  transition: { duration: 0.5 }
+};
 
 export default function Expertise() {
   return (
-    <section className="py-20 bg-brand-beige">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="py-24 bg-white relative overflow-hidden font-sans">
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
+        <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div className="max-w-2xl">
+            <h2 className="text-sm uppercase tracking-[0.4em] text-brand-primary font-light mb-4">Our Specialization</h2>
+            <h3 className="text-4xl md:text-5xl font-light text-[#333333] leading-tight tracking-tight">
+              Comprehensive Legal Solutions Tailored to Your Needs
+            </h3>
+          </div>
 
-        <div className="mb-12 pb-4 border-b border-gray-300">
-          <h2 className="text-3xl font-serif text-text-main">Our Expertise</h2>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
+        <motion.div
+          variants={containerVariants}
+          initial="initial"
+          whileInView="whileInView"
+          viewport={{ once: true }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
           {services.map((service, index) => (
-            <div key={index} className="flex items-center p-4 border-b border-gray-200/50 hover:bg-white/50 transition-colors">
-              <div className="text-text-muted mr-4">
-                <service.icon size={24} strokeWidth={1} />
+            <motion.div
+              key={index}
+              variants={itemVariants}
+              className="group bg-white p-8 rounded-3xl border border-gray-100 hover:border-brand-primary/30 shadow-sm hover:shadow-xl hover:shadow-brand-primary/5 transition-all duration-500 flex flex-col"
+            >
+              <div className="w-14 h-14 bg-[#f5f5f0] rounded-2xl flex items-center justify-center text-brand-primary mb-6 group-hover:bg-brand-primary group-hover:text-white transition-all duration-500">
+                <service.icon size={28} strokeWidth={1.5} />
               </div>
-              <span className="text-lg text-text-main font-light">{service.label}</span>
-            </div>
+              <h4 className="text-xl font-light text-[#333333] mb-3 group-hover:text-brand-primary transition-colors duration-300">
+                {service.label}
+              </h4>
+              <p className="text-[#666666] font-light leading-relaxed mb-6">
+                {service.description}
+              </p>
+              <div className="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <span className="text-sm font-light text-brand-primary">Learn More</span>
+                <ArrowUpRight className="w-4 h-4 text-brand-primary" />
+              </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
