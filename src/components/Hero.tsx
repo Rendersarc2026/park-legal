@@ -21,7 +21,7 @@ export default function Hero() {
             className="object-cover opacity-80"
             priority
           />
-          <div className="absolute inset-0 bg-white/40 mix-blend-overlay"></div>
+          <div className="absolute inset-0 bg-white/20"></div>
         </div>
       </motion.div>
 
@@ -38,14 +38,14 @@ export default function Hero() {
             alt="Park Legal Logo"
             width={700}
             height={120}
-            className="w-80 md:w-[600px] h-auto"
+            className="w-80 md:w-[600px] h-auto drop-shadow-2xl"
           />
         </motion.div>
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-xl md:text-2xl text-text-muted font-light max-w-2xl mx-auto leading-relaxed"
+          className="text-xl md:text-3xl text-[#333333] font-light max-w-2xl mx-auto leading-relaxed tracking-wide drop-shadow-sm"
         >
           Litigate with Clarity.
         </motion.p>
