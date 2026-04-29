@@ -91,6 +91,19 @@ export default function ContactPage() {
             </p>
           </div>
 
+          <div className="mt-16 bg-white p-4 rounded-2xl shadow-sm border border-gray-100 h-[450px] overflow-hidden">
+            <iframe 
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5955.1606332247375!2d76.2860321959727!3d9.989502845573622!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080ddacda75ca7%3A0x7c9ac992a01a6300!2sPark%20Legal!5e0!3m2!1sen!2sin!4v1777449136806!5m2!1sen!2sin" 
+              width="100%" 
+              height="100%" 
+              style={{ border: 0 }} 
+              allowFullScreen 
+              loading="lazy" 
+              referrerPolicy="no-referrer-when-downgrade"
+              className="rounded-xl grayscale hover:grayscale-0 transition-all duration-700"
+            ></iframe>
+          </div>
+
         </div>
       </section>
 

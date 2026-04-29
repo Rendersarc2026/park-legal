@@ -13,7 +13,7 @@ export default function Expertise() {
   return (
     <section className="py-20 bg-brand-beige">
       <div className="max-w-6xl mx-auto px-6">
-        
+
         <div className="mb-12 pb-4 border-b border-gray-300">
           <h2 className="text-3xl font-serif text-text-main">Our Expertise</h2>
         </div>
@@ -28,13 +28,6 @@ export default function Expertise() {
             </div>
           ))}
         </div>
-        
-        <div className="mt-16 text-center">
-            <button className="bg-brand-primary text-white px-8 py-3 rounded text-sm uppercase tracking-widest hover:bg-brand-primary-dark transition-colors shadow-sm">
-                Get Consultation
-            </button>
-        </div>
-
       </div>
     </section>
   );
