@@ -36,7 +36,7 @@ export default function Testimonials() {
           className="max-w-3xl mx-auto"
         >
           <p className="text-[#666666] text-xl md:text-2xl leading-relaxed mb-12 font-light">
-            &quot;Jyotsna provided my company with outstanding legal assistance. Her work was thoughtful, timely and complete. Her advice is pragmatic and she is able to quickly understand and help resolve issues faced by foreign entities seeking to do business in India.&quot;
+            "Jyotsna provided my company with outstanding legal assistance. Her work was thoughtful, timely and complete. Her advice is pragmatic and she is able to quickly understand and help resolve issues faced by foreign entities seeking to do business in India."
           </p>
 
           <div className="flex justify-center gap-2 mb-8">
@@ -45,10 +45,7 @@ export default function Testimonials() {
             ))}
           </div>
 
-          {/* <div className="text-center">
-            <h4 className="text-xl font-light text-[#333333] mb-1">Debbie Rosen</h4>
-            <p className="text-[#9CA3AF] text-sm uppercase tracking-widest font-light">Vice President/CLO at Standex International</p>
-          </div> */}
+
         </motion.div>
 
       </div>
