@@ -88,7 +88,7 @@ export default function AboutContent() {
                 </div>
               </div>
             </motion.div>
-            
+
             {/* Our History Card */}
             <motion.div
               initial={{ opacity: 0, x: 50 }}
@@ -153,7 +153,7 @@ export default function AboutContent() {
       {/* Why Choose Us Section */}
       <section className="py-24 px-4 md:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -182,7 +182,7 @@ export default function AboutContent() {
                   ))}
                 </div>
               </div>
-              
+
               <div className="grid grid-cols-2 gap-6">
                 {[
                   { label: "Years Experience", value: "15+" },

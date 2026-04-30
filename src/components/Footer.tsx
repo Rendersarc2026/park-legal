@@ -14,9 +14,9 @@ export default function Footer() {
               <Image
                 src="/assets/logo.svg"
                 alt="Park Legal Logo"
-                width={150}
-                height={40}
-                className="h-8 w-auto grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all"
+                width={350}
+                height={180}
+                className="h-20 w-auto grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all"
               />
             </Link>
             <p className="text-[#666666] font-light leading-relaxed max-w-sm mb-8">

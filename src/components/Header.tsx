@@ -33,35 +33,35 @@ export default function Header() {
 
   return (
     <>
-      <header 
-        className={`fixed top-0 left-0 w-full z-50 px-6 md:px-12 flex justify-between items-center transition-all duration-500 font-sans
-          ${isScrolled || isMenuOpen ? 'bg-white/80 backdrop-blur-xl shadow-sm py-4' : 'bg-transparent py-8'}
+      <header
+        className={`fixed top-0 left-0 w-full z-50 px-6 md:px-12 flex justify-between items-center transition-all duration-500 font-sans bg-white shadow-sm
+          ${isScrolled || isMenuOpen ? 'py-2' : 'py-3 md:py-4'}
         `}
       >
         <Link href="/" className="z-50 relative group">
           <div className="relative">
-            <Image 
-              src="/assets/logo.svg" 
-              alt="Park Legal Logo" 
-              width={360} 
-              height={120} 
-              className={`w-auto object-contain transition-all duration-500 ${isScrolled || isMenuOpen ? 'h-20' : 'h-24'}`}
+            <Image
+              src="/assets/logo.svg"
+              alt="Park Legal Logo"
+              width={360}
+              height={120}
+              className={`w-auto object-contain transition-all duration-500 ${isScrolled || isMenuOpen ? 'h-10 md:h-12' : 'h-14 md:h-20'}`}
               priority
             />
           </div>
         </Link>
-        
+
         {/* Desktop Navigation */}
         <nav className="hidden md:flex gap-12 items-center">
           {navLinks.map((link) => (
-            <Link 
+            <Link
               key={link.path}
-              href={link.path} 
-              className={`relative text-sm uppercase tracking-[0.2em] font-bold transition-colors duration-300 hover:text-[#C53030] ${isActive(link.path) ? 'text-[#C53030]' : 'text-[#333333]'}`}
+              href={link.path}
+              className={`relative text-sm uppercase tracking-[0.2em] font-medium transition-colors duration-300 hover:text-[#C53030] ${isActive(link.path) ? 'text-[#C53030]' : 'text-[#333333]'}`}
             >
               {link.name}
               {isActive(link.path) && (
-                <motion.div 
+                <motion.div
                   layoutId="nav-underline"
                   className="absolute -bottom-2 left-0 w-full h-0.5 bg-[#C53030]"
                   transition={{ type: 'spring', stiffness: 380, damping: 30 }}
@@ -72,7 +72,7 @@ export default function Header() {
         </nav>
 
         {/* Mobile Menu Button */}
-        <button 
+        <button
           onClick={toggleMenu}
           className={`md:hidden z-50 relative p-2 rounded-full transition-all duration-300 ${isMenuOpen ? 'bg-brand-primary text-white' : 'bg-gray-100 text-[#333333]'}`}
           aria-label="Toggle menu"
@@ -83,20 +83,20 @@ export default function Header() {
         {/* Mobile Navigation Overlay */}
         <AnimatePresence>
           {isMenuOpen && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className="absolute top-full left-0 w-full bg-white shadow-2xl md:hidden overflow-hidden rounded-b-[2rem]"
+              className="absolute top-full left-0 w-full bg-white shadow-lg md:hidden overflow-hidden border-t border-gray-100"
             >
               <nav className="flex flex-col p-8 gap-6">
                 {navLinks.map((link) => (
-                  <Link 
+                  <Link
                     key={link.path}
-                    href={link.path} 
-                    onClick={toggleMenu} 
-                    className={`text-xl font-bold transition-colors ${isActive(link.path) ? 'text-[#C53030]' : 'text-[#333333]'}`}
+                    href={link.path}
+                    onClick={toggleMenu}
+                    className={`text-xl font-medium transition-colors ${isActive(link.path) ? 'text-[#C53030]' : 'text-[#333333]'}`}
                   >
                     {link.name}
                   </Link>

@@ -17,14 +17,14 @@ export default function ContactContent() {
       {/* Hero Section */}
       <section className="relative pt-24 pb-24 px-4 md:px-8 bg-white">
         <div className="max-w-5xl mx-auto relative z-10 text-center">
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             className="text-5xl md:text-7xl font-light text-[#333333] mb-8 tracking-tight"
           >
             Contact Us
           </motion.h1>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -39,9 +39,9 @@ export default function ContactContent() {
       <section className="py-20 px-4 md:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="grid lg:grid-cols-3 gap-8">
-            
+
             {/* Primary Contact Info */}
-            <motion.div 
+            <motion.div
               {...fadeInUp}
               className="lg:col-span-2 space-y-8"
             >
@@ -79,12 +79,12 @@ export default function ContactContent() {
                   </div>
                   <h3 className="text-sm uppercase tracking-widest text-[#666666] font-light mb-4">Visit Our Office</h3>
                   <p className="text-2xl font-light mb-6 leading-relaxed">
-                    1st Floor, Johns Corner Building, Judges Ave, GCDA LIG Colony, 
+                    1st Floor, Johns Corner Building, Judges Ave, GCDA LIG Colony,
                     Ernakulam North, Kathrikadavu, Kaloor, Kochi, Kerala 682017
                   </p>
-                  <Link 
-                    href="https://share.google/RA8iNjjGzmtfZquIz" 
-                    target="_blank" 
+                  <Link
+                    href="https://share.google/RA8iNjjGzmtfZquIz"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-brand-primary hover:text-[#333333] transition-colors font-light text-lg"
                   >
@@ -95,7 +95,7 @@ export default function ContactContent() {
             </motion.div>
 
             {/* Side Column - Direct Contacts */}
-            <motion.div 
+            <motion.div
               {...fadeInUp}
               transition={{ delay: 0.2 }}
               className="space-y-6"
@@ -120,7 +120,7 @@ export default function ContactContent() {
                     </div>
                   ))}
                 </div>
-                
+
                 <div className="mt-12 p-6 bg-brand-primary/5 rounded-2xl border border-brand-primary/10">
                   <p className="text-sm text-[#666666] leading-relaxed font-light">
                     Our team is available for urgent consultations. Please reach out to our direct lines for immediate assistance.
@@ -136,17 +136,17 @@ export default function ContactContent() {
       {/* Map Section */}
       <section className="py-20 px-4 md:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
-          <motion.div 
+          <motion.div
             {...fadeInUp}
             className="rounded-[3rem] overflow-hidden shadow-2xl shadow-brand-primary/5 border-8 border-gray-50 h-[500px]"
           >
-            <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5955.1606332247375!2d76.2860321959727!3d9.989502845573622!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080ddacda75ca7%3A0x7c9ac992a01a6300!2sPark%20Legal!5e0!3m2!1sen!2sin!4v1777449136806!5m2!1sen!2sin" 
-              width="100%" 
-              height="100%" 
-              style={{ border: 0 }} 
-              allowFullScreen 
-              loading="lazy" 
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5955.1606332247375!2d76.2860321959727!3d9.989502845573622!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080ddacda75ca7%3A0x7c9ac992a01a6300!2sPark%20Legal!5e0!3m2!1sen!2sin!4v1777449136806!5m2!1sen!2sin"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               className="grayscale contrast-125 hover:grayscale-0 transition-all duration-1000"
             ></iframe>
