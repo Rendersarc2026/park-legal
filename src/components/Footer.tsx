@@ -12,11 +12,11 @@ export default function Footer() {
           <div className="col-span-1 md:col-span-2">
             <Link href="/" className="inline-block mb-6">
               <Image
-                src="/assets/logo.svg"
+                src="/assets/logo.png"
                 alt="Park Legal Logo"
                 width={350}
                 height={180}
-                className="h-20 w-auto grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all"
+                className="h-14 w-auto grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all"
               />
             </Link>
             <p className="text-[#666666] font-light leading-relaxed max-w-sm mb-8">

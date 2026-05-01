@@ -26,29 +26,32 @@ export default function Hero() {
       </motion.div>
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto mt-[-3%] flex flex-col items-center">
+      <div className="relative z-10 w-full flex flex-col items-center mt-[-5%]">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="mb-0"
+          className="mb-16"
         >
           <Image
-            src="/assets/logo.svg"
+            src="/assets/logo.png"
             alt="Park Legal Logo"
             width={700}
             height={120}
-            className="w-64 md:w-[600px] h-auto drop-shadow-2xl"
+            className="w-[110px] md:w-[150px] h-auto drop-shadow-2xl"
           />
         </motion.div>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-xl md:text-3xl text-[#333333] font-light max-w-2xl mx-auto leading-relaxed tracking-wide drop-shadow-sm"
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 1 }}
+          className="w-full bg-gradient-to-r from-transparent via-white/50 to-transparent backdrop-blur-[2px] py-4 md:py-6 flex justify-center items-center [mask-image:linear-gradient(to_right,transparent,black_20%,black_80%,transparent)]"
         >
-          Litigate with Clarity.
-        </motion.p>
+          <h1 className="text-base md:text-xl lg:text-2xl font-serif tracking-[0.25em] text-[#1A1A1A] uppercase text-center px-6 leading-tight">
+            Litigate with Clarity
+          </h1>
+        </motion.div>
       </div>
 
       {/* Decorative gradient at bottom to blend with next section */}
