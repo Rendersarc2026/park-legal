@@ -26,7 +26,7 @@ export default function Hero() {
       </motion.div>
 
       {/* Content */}
-      <div className="relative z-10 w-full flex flex-col items-center mt-[-5%]">
+      <div className="relative z-10 w-full flex flex-col items-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
