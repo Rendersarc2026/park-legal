@@ -35,7 +35,7 @@ export default function AdminTestimonials() {
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
@@ -113,7 +113,7 @@ export default function AdminTestimonials() {
 
   const confirmDelete = async () => {
     if (!itemToDelete) return;
-    
+
     try {
       const res = await fetch('/api/admin/testimonials', {
         method: 'DELETE',
@@ -205,38 +205,38 @@ export default function AdminTestimonials() {
             <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Quote</label>
-                <textarea 
+                <textarea
                   {...register('quote')}
-                  rows={4} 
-                  className={`w-full px-4 py-2 border rounded-xl ${errors.quote ? 'border-red-500' : ''}`} 
+                  rows={4}
+                  className={`w-full px-4 py-2 border rounded-xl ${errors.quote ? 'border-red-500' : ''}`}
                 />
                 {errors.quote && <p className="text-red-500 text-xs mt-1">{errors.quote.message}</p>}
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Author Name (Optional)</label>
-                  <input 
+                  <input
                     {...register('author')}
-                    type="text" 
-                    className="w-full px-4 py-2 border rounded-xl" 
+                    type="text"
+                    className="w-full px-4 py-2 border rounded-xl"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Stars (1-5)</label>
-                  <input 
+                  <input
                     {...register('stars', { valueAsNumber: true })}
-                    type="number" 
-                    min="1" 
-                    max="5" 
-                    className={`w-full px-4 py-2 border rounded-xl ${errors.stars ? 'border-red-500' : ''}`} 
+                    type="number"
+                    min="1"
+                    max="5"
+                    className={`w-full px-4 py-2 border rounded-xl ${errors.stars ? 'border-red-500' : ''}`}
                   />
                   {errors.stars && <p className="text-red-500 text-xs mt-1">{errors.stars.message}</p>}
                 </div>
               </div>
               <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 mt-6">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-2 border rounded-xl hover:bg-gray-50">Cancel</button>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={isSubmitting}
                   className="px-6 py-2 bg-brand-primary text-white rounded-xl hover:bg-brand-primary/90 disabled:opacity-50"
                 >

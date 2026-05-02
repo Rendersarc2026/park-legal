@@ -38,3 +38,11 @@ model AboutSection {
   stats       Json     
   points      String[] 
 }
+
+model UploadedImage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  type      String
+  data      Bytes
+  createdAt DateTime @default(now())
+}

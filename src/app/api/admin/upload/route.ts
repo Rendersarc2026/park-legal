@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { v4 as uuidv4 } from 'uuid';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
   try {
@@ -12,28 +10,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
     }
 
+    // Limit size to 5MB
+    const MAX_SIZE = 5 * 1024 * 1024;
+    if (file.size > MAX_SIZE) {
+      return NextResponse.json({ error: 'File size too large. Maximum limit is 5MB.' }, { status: 413 });
+    }
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Create unique filename
-    const fileExtension = file.name.split('.').pop();
-    const fileName = `${uuidv4()}.${fileExtension}`;
-    
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
-    
-    // Ensure directory exists (just in case)
-    try {
-      await mkdir(uploadDir, { recursive: true });
-    } catch (e) {}
+    // Save to MongoDB
+    const uploadedImage = await prisma.uploadedImage.create({
+      data: {
+        name: file.name,
+        type: file.type,
+        data: buffer,
+      },
+    });
 
-    const path = join(uploadDir, fileName);
-    await writeFile(path, buffer);
-
-    const imageUrl = `/uploads/${fileName}`;
+    // We will serve images via a dynamic route /api/images/[id]
+    const imageUrl = `/api/images/${uploadedImage.id}`;
 
     return NextResponse.json({ imageUrl });
   } catch (error) {
     console.error('Upload error:', error);
-    return NextResponse.json({ error: 'Failed to upload file' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to upload to database' }, { status: 500 });
   }
 }

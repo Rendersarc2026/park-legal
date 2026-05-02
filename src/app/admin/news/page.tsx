@@ -84,6 +84,13 @@ export default function AdminNews() {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    // Check file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('File size exceeds 5MB limit');
+      e.target.value = ''; // Reset input
+      return;
+    }
+
     setUploading(true);
     const formDataUpload = new FormData();
     formDataUpload.append('file', file);
