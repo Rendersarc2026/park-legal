@@ -1,0 +1,40 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGODB_URI")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model AdminUser {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  username String @unique
+  password String
+}
+
+model Article {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  excerpt   String
+  content   String?
+  date      String
+  category  String
+  imageUrl  String
+  createdAt DateTime @default(now())
+}
+
+model Testimonial {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  quote     String
+  stars     Int      @default(5)
+  author    String?
+  createdAt DateTime @default(now())
+}
+
+model AboutSection {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  stats       Json     
+  points      String[] 
+}

@@ -1,0 +1,337 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Plus, Edit2, Trash2, X } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import toast from 'react-hot-toast';
+import ConfirmationModal from '@/components/ConfirmationModal';
+
+const noScript = (value: string | undefined) => {
+  if (!value) return true;
+  return !/<script\b[^>]*>([\s\S]*?)<\/script>/gim.test(value);
+};
+
+const schema = yup.object({
+  title: yup.string()
+    .min(5, 'Title must be at least 5 characters')
+    .test('no-script', 'Script tags are not allowed', noScript)
+    .required('Title is required'),
+  date: yup.string().required('Date is required'),
+  category: yup.string()
+    .test('no-script', 'Script tags are not allowed', noScript)
+    .required('Category is required'),
+  imageUrl: yup.string()
+    .required('Image URL is required')
+    .test('is-valid-src', 'Must be a valid URL or relative path (starting with /)', (value) => {
+      if (!value) return false;
+      return value.startsWith('/') || value.startsWith('http');
+    })
+    .test('no-script', 'Script tags are not allowed', noScript),
+  excerpt: yup.string()
+    .min(10, 'Excerpt must be at least 10 characters')
+    .test('no-script', 'Script tags are not allowed', noScript)
+    .required('Excerpt is required'),
+}).required();
+
+type FormData = yup.InferType<typeof schema>;
+
+export default function AdminNews() {
+  const [articles, setArticles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      title: '',
+      excerpt: '',
+      date: '',
+      category: '',
+      imageUrl: '',
+    }
+  });
+
+  const imageUrl = watch('imageUrl');
+
+  const fetchArticles = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/admin/news');
+      if (res.ok) {
+        const data = await res.json();
+        setArticles(data);
+      }
+    } catch (err) {
+      toast.error('Failed to fetch articles');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
+
+  const [uploading, setUploading] = useState(false);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const formDataUpload = new FormData();
+    formDataUpload.append('file', file);
+
+    try {
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formDataUpload,
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setValue('imageUrl', data.imageUrl);
+        toast.success('Image uploaded successfully');
+      } else {
+        toast.error('Upload failed');
+      }
+    } catch (err) {
+      toast.error('Upload error');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleOpenModal = (article?: any) => {
+    if (article) {
+      setEditingId(article.id);
+      reset({
+        title: article.title,
+        excerpt: article.excerpt,
+        date: article.date, // Now stored as YYYY-MM-DD
+        category: article.category,
+        imageUrl: article.imageUrl,
+      });
+    } else {
+      setEditingId(null);
+      reset({ 
+        title: '', 
+        excerpt: '', 
+        date: new Date().toISOString().split('T')[0], 
+        category: '', 
+        imageUrl: '', 
+      });
+    }
+    setIsModalOpen(true);
+  };
+
+  const onSubmit = async (data: FormData) => {
+    const method = editingId ? 'PUT' : 'POST';
+    const body = editingId ? { id: editingId, ...data } : data;
+
+    try {
+      const res = await fetch('/api/admin/news', {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+
+      if (res.ok) {
+        toast.success(editingId ? 'Article updated successfully' : 'Article created successfully');
+        setIsModalOpen(false);
+        fetchArticles();
+      } else {
+        const errorData = await res.json();
+        toast.error(errorData.error || 'Failed to save article');
+      }
+    } catch (err) {
+      toast.error('An error occurred while saving');
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    setItemToDelete(id);
+    setIsDeleteModalOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!itemToDelete) return;
+    
+    try {
+      const res = await fetch('/api/admin/news', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: itemToDelete }),
+      });
+
+      if (res.ok) {
+        toast.success('Article deleted successfully');
+        fetchArticles();
+      } else {
+        const errorData = await res.json();
+        toast.error(errorData.error || 'Failed to delete article');
+      }
+    } catch (err) {
+      toast.error('An error occurred while deleting');
+    } finally {
+      setItemToDelete(null);
+    }
+  };
+
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return '-';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return dateStr; // Fallback to raw string
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  return (
+    <div className="p-8">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-3xl font-light text-[#333333]">News & Articles</h1>
+        <button
+          onClick={() => handleOpenModal()}
+          className="flex items-center gap-2 bg-brand-primary text-white px-4 py-2 rounded-xl hover:bg-brand-primary/90 transition-colors"
+        >
+          <Plus size={20} /> Add Article
+        </button>
+      </div>
+
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+        {loading ? (
+          <div className="p-8 text-center text-gray-500">Loading...</div>
+        ) : (
+          <table className="w-full text-left">
+            <thead className="bg-gray-50 text-gray-500 font-medium">
+              <tr>
+                <th className="px-6 py-4">Title</th>
+                <th className="px-6 py-4">Date</th>
+                <th className="px-6 py-4">Category</th>
+                <th className="px-6 py-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {articles.map((article) => (
+                <tr key={article.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4 font-medium text-gray-900">{article.title}</td>
+                  <td className="px-6 py-4 text-gray-500">{formatDate(article.date)}</td>
+                  <td className="px-6 py-4 text-gray-500">{article.category}</td>
+                  <td className="px-6 py-4 text-right flex justify-end gap-2">
+                    <button onClick={() => handleOpenModal(article)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg">
+                      <Edit2 size={18} />
+                    </button>
+                    <button onClick={() => handleDelete(article.id)} className="p-2 text-red-600 hover:bg-red-50 rounded-lg">
+                      <Trash2 size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {articles.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="px-6 py-8 text-center text-gray-500">No articles found. Add one to get started.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-gray-100 p-6 flex justify-between items-center z-10">
+              <h2 className="text-xl font-medium">{editingId ? 'Edit Article' : 'New Article'}</h2>
+              <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full">
+                <X size={20} />
+              </button>
+            </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                <input 
+                  {...register('title')}
+                  type="text" 
+                  className={`w-full px-4 py-2 border rounded-xl ${errors.title ? 'border-red-500' : ''}`} 
+                />
+                {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                  <input 
+                    {...register('date')}
+                    type="date" 
+                    className={`w-full px-4 py-2 border rounded-xl ${errors.date ? 'border-red-500' : ''}`} 
+                  />
+                  {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date.message}</p>}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Category (e.g. Legal Advice)</label>
+                  <input 
+                    {...register('category')}
+                    type="text" 
+                    className={`w-full px-4 py-2 border rounded-xl ${errors.category ? 'border-red-500' : ''}`} 
+                  />
+                  {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category.message}</p>}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+                <div className="flex gap-4 items-center">
+                  <input 
+                    {...register('imageUrl')}
+                    type="text" 
+                    className={`flex-1 px-4 py-2 border rounded-xl ${errors.imageUrl ? 'border-red-500' : ''}`} 
+                    placeholder="Upload image or enter URL" 
+                  />
+                  <label className="cursor-pointer bg-gray-50 px-4 py-2 border border-dashed border-gray-300 rounded-xl hover:bg-gray-100 transition-colors whitespace-nowrap">
+                    <span className="text-sm text-gray-600">{uploading ? 'Uploading...' : 'Upload File'}</span>
+                    <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*" />
+                  </label>
+                </div>
+                {errors.imageUrl && <p className="text-red-500 text-xs mt-1">{errors.imageUrl.message}</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Excerpt (Short Summary)</label>
+                <textarea 
+                  {...register('excerpt')}
+                  rows={2} 
+                  className={`w-full px-4 py-2 border rounded-xl ${errors.excerpt ? 'border-red-500' : ''}`} 
+                />
+                {errors.excerpt && <p className="text-red-500 text-xs mt-1">{errors.excerpt.message}</p>}
+              </div>
+              <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 mt-6">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-2 border rounded-xl hover:bg-gray-50">Cancel</button>
+                <button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="px-6 py-2 bg-brand-primary text-white rounded-xl hover:bg-brand-primary/90 disabled:opacity-50"
+                >
+                  {isSubmitting ? 'Saving...' : 'Save'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      <ConfirmationModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={confirmDelete}
+        title="Delete Article"
+        message="Are you sure you want to delete this article? This action cannot be undone."
+      />
+    </div>
+  );
+}
