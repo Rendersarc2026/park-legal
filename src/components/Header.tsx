@@ -21,6 +21,8 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+
+
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const isActive = (path: string) => pathname === path;
@@ -34,18 +36,16 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-50 px-6 md:px-12 flex justify-between items-center transition-all duration-500 font-sans bg-white shadow-sm
-          ${isScrolled || isMenuOpen ? 'py-2' : 'py-3 md:py-4'}
-        `}
+        className={`fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-4 md:py-5 flex justify-between items-center transition-all duration-500 font-sans ${isMenuOpen ? 'bg-white' : isScrolled ? 'bg-white/80 backdrop-blur-md shadow-md' : 'bg-white shadow-sm'}`}
       >
         <Link href="/" className="z-50 relative group">
           <div className="relative">
             <Image
-              src="/assets/logo.svg"
+              src="/assets/logo.png"
               alt="Park Legal Logo"
               width={360}
               height={120}
-              className={`w-auto object-contain transition-all duration-500 ${isScrolled || isMenuOpen ? 'h-10 md:h-12' : 'h-14 md:h-20'}`}
+              className="h-10 md:h-12 w-auto object-contain"
               priority
             />
           </div>
