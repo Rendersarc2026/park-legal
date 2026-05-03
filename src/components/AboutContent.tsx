@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Scale, Shield, Users, Lightbulb, CheckCircle2, History, Target } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -20,6 +21,14 @@ const staggerContainer = {
 };
 
 export default function AboutContent() {
+  const [aboutData, setAboutData] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('/api/admin/about').then(r => r.json()).then(data => {
+      if (!data.error) setAboutData(data);
+    });
+  }, []);
+
   const values = [
     {
       icon: <Scale className="w-6 h-6" />,
@@ -164,15 +173,15 @@ export default function AboutContent() {
               <div>
                 <h2 className="text-4xl md:text-5xl font-light mb-8 leading-tight">Why Choose Park Legal?</h2>
                 <p className="text-[#666666] text-xl mb-12 leading-relaxed font-light">
-                  We combine deep legal expertise with a practical understanding of the real-world challenges our clients face. Our proactive approach ensures that we not only address current legal issues but also help prevent future complications.
+                  {aboutData?.description || "We combine deep legal expertise with a practical understanding of the real-world challenges our clients face. Our proactive approach ensures that we not only address current legal issues but also help prevent future complications."}
                 </p>
                 <div className="grid sm:grid-cols-2 gap-6">
-                  {[
+                  {(aboutData?.points || [
                     "Decades of experience",
                     "Specialized expertise",
                     "Proven track record",
                     "Transparent fee structure"
-                  ].map((item, i) => (
+                  ]).map((item: string, i: number) => (
                     <div key={i} className="flex items-center space-x-4">
                       <div className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-primary/20 flex items-center justify-center">
                         <CheckCircle2 className="w-4 h-4 text-brand-primary" />
@@ -184,12 +193,12 @@ export default function AboutContent() {
               </div>
 
               <div className="grid grid-cols-2 gap-6">
-                {[
+                {(aboutData?.stats || [
                   { label: "Years Experience", value: "15+" },
                   { label: "Cases Won", value: "100+" },
                   { label: "Client Dedication", value: "100%" },
                   { label: "Legal Support", value: "24/7" }
-                ].map((stat, i) => (
+                ]).map((stat: any, i: number) => (
                   <div key={i} className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-brand-primary/50 transition-colors duration-300 group">
                     <p className="text-4xl font-light text-brand-primary mb-2 group-hover:scale-110 transition-transform duration-300">{stat.value}</p>
                     <p className="text-xs text-[#666666] uppercase tracking-widest font-light">{stat.label}</p>
