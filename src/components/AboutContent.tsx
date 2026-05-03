@@ -146,7 +146,7 @@ export default function AboutContent() {
               <motion.div
                 key={index}
                 variants={fadeInUp}
-                className="group bg-white p-10 rounded-[2rem] shadow-sm border border-gray-100 hover:border-brand-primary/30 hover:shadow-xl hover:shadow-brand-primary/5 transition-all duration-500"
+                className="group bg-white p-10 rounded-[2rem] shadow-sm border border-gray-200 hover:border-brand-primary/30 hover:shadow-xl hover:shadow-brand-primary/5 transition-all duration-500"
               >
                 <div className="w-14 h-14 bg-brand-primary/5 rounded-2xl flex items-center justify-center text-brand-primary mb-8 group-hover:scale-110 group-hover:bg-brand-primary group-hover:text-white transition-all duration-500">
                   {value.icon}
@@ -167,7 +167,7 @@ export default function AboutContent() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="bg-white border border-gray-100 shadow-sm rounded-[3rem] p-10 md:p-20 text-[#333333] relative overflow-hidden"
+            className="bg-white border border-gray-200 shadow-sm rounded-[3rem] p-10 md:p-20 text-[#333333] relative overflow-hidden"
           >
             <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
               <div>
@@ -199,7 +199,7 @@ export default function AboutContent() {
                   { label: "Client Dedication", value: "100%" },
                   { label: "Legal Support", value: "24/7" }
                 ]).map((stat: any, i: number) => (
-                  <div key={i} className="bg-gray-50 p-8 rounded-3xl border border-gray-100 hover:border-brand-primary/50 transition-colors duration-300 group">
+                  <div key={i} className="bg-gray-50 p-8 rounded-3xl border border-gray-200 hover:border-brand-primary/50 transition-colors duration-300 group">
                     <p className="text-4xl font-light text-brand-primary mb-2 group-hover:scale-110 transition-transform duration-300">{stat.value}</p>
                     <p className="text-xs text-[#666666] uppercase tracking-widest font-light">{stat.label}</p>
                   </div>

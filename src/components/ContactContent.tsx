@@ -47,7 +47,7 @@ export default function ContactContent() {
             >
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Phone Card */}
-                <div className="bg-white p-10 rounded-[2rem] border border-gray-100 hover:border-brand-primary/30 transition-all duration-500 group shadow-sm">
+                <div className="bg-white p-10 rounded-[2rem] border border-gray-200 hover:border-brand-primary/30 transition-all duration-500 group shadow-sm">
                   <div className="w-12 h-12 bg-brand-primary/5 rounded-2xl flex items-center justify-center text-brand-primary mb-6 shadow-sm group-hover:bg-brand-primary group-hover:text-white transition-all duration-500">
                     <Phone className="w-6 h-6" />
                   </div>
@@ -59,7 +59,7 @@ export default function ContactContent() {
                 </div>
 
                 {/* Email Card */}
-                <div className="bg-white p-10 rounded-[2rem] border border-gray-100 hover:border-brand-primary/30 transition-all duration-500 group shadow-sm">
+                <div className="bg-white p-10 rounded-[2rem] border border-gray-200 hover:border-brand-primary/30 transition-all duration-500 group shadow-sm">
                   <div className="w-12 h-12 bg-brand-primary/5 rounded-2xl flex items-center justify-center text-brand-primary mb-6 shadow-sm group-hover:bg-brand-primary group-hover:text-white transition-all duration-500">
                     <Mail className="w-6 h-6" />
                   </div>
@@ -72,7 +72,7 @@ export default function ContactContent() {
               </div>
 
               {/* Location Card */}
-              <div className="bg-white p-10 md:p-14 rounded-[2.5rem] text-[#333333] border border-gray-100 shadow-sm relative overflow-hidden group">
+              <div className="bg-white p-10 md:p-14 rounded-[2.5rem] text-[#333333] border border-gray-200 shadow-sm relative overflow-hidden group">
                 <div className="relative z-10">
                   <div className="w-12 h-12 bg-brand-primary/5 rounded-2xl flex items-center justify-center text-brand-primary mb-8">
                     <MapPin className="w-6 h-6" />
@@ -100,14 +100,14 @@ export default function ContactContent() {
               transition={{ delay: 0.2 }}
               className="space-y-6"
             >
-              <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm h-full">
+              <div className="bg-white p-8 rounded-[2rem] border border-gray-200 shadow-sm h-full">
                 <h3 className="text-2xl font-light text-[#333333] mb-8">Direct Contacts</h3>
                 <div className="space-y-6">
                   {[
                     { name: "Aravind", phone: "8714812848" },
                     { name: "Manu", phone: "9400897108" }
                   ].map((contact, i) => (
-                    <div key={i} className="p-6 bg-gray-50/50 rounded-2xl border border-transparent hover:border-brand-primary/20 transition-all group">
+                    <div key={i} className="p-6 bg-gray-50/50 rounded-2xl border border-gray-200 hover:border-brand-primary/20 transition-all group">
                       <div className="flex items-center gap-4 mb-3">
                         <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-brand-primary shadow-sm">
                           <User className="w-5 h-5" />

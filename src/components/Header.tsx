@@ -88,7 +88,7 @@ export default function Header() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
-              className="absolute top-full left-0 w-full bg-white shadow-lg md:hidden overflow-hidden border-t border-gray-100"
+              className="absolute top-full left-0 w-full bg-white shadow-lg md:hidden overflow-hidden border-t border-gray-200"
             >
               <nav className="flex flex-col p-8 gap-6">
                 {navLinks.map((link) => (

@@ -4,7 +4,7 @@ import { Mail, MapPin, Phone, ArrowUpRight } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="pt-24 pb-12 bg-white border-t border-gray-100 font-sans">
+    <footer className="pt-24 pb-12 bg-white border-t border-gray-200 font-sans">
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
 
@@ -72,7 +72,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
+        <div className="pt-8 border-t border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-xs text-[#9CA3AF] font-light tracking-widest">
             © 2024 PARK LEGAL. ALL RIGHTS RESERVED.
           </p>

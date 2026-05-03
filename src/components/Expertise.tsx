@@ -52,7 +52,7 @@ export default function Expertise() {
             <motion.div
               key={index}
               variants={itemVariants}
-              className="group bg-white p-8 rounded-3xl border border-gray-100 hover:border-brand-primary/30 shadow-sm hover:shadow-xl hover:shadow-brand-primary/5 transition-all duration-500 flex flex-col"
+              className="group bg-white p-8 rounded-3xl border border-gray-200 hover:border-brand-primary/30 shadow-sm hover:shadow-xl hover:shadow-brand-primary/5 transition-all duration-500 flex flex-col"
             >
               <div className="w-14 h-14 bg-[#f5f5f0] rounded-2xl flex items-center justify-center text-brand-primary mb-6 group-hover:bg-brand-primary group-hover:text-white transition-all duration-500">
                 <service.icon size={28} strokeWidth={1.5} />
@@ -63,7 +63,7 @@ export default function Expertise() {
               <p className="text-[#666666] font-light leading-relaxed mb-6">
                 {service.description}
               </p>
-              <div className="mt-auto pt-4 border-t border-gray-50 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+              <div className="mt-auto pt-4 border-t border-gray-200 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                 <span className="text-sm font-light text-brand-primary">Learn More</span>
                 <ArrowUpRight className="w-4 h-4 text-brand-primary" />
               </div>
