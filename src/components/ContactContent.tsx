@@ -148,7 +148,7 @@ export default function ContactContent() {
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              className="grayscale contrast-125 hover:grayscale-0 transition-all duration-1000"
+              className="w-full h-full transition-all duration-1000"
             ></iframe>
           </motion.div>
         </div>
