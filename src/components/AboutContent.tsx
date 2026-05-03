@@ -65,13 +65,13 @@ export default function AboutContent() {
       </section>
 
       {/* Mission & History Section */}
-      <section className="py-24 px-4 md:px-8 bg-white">
+      <section className=" px-4 md:px-8 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-10 items-stretch">
             {/* Our Mission Card */}
             <motion.div
               {...fadeInUp}
-              className="bg-white p-10 md:p-14 rounded-[3rem] border border-gray-100 shadow-sm flex flex-col relative overflow-hidden group hover:border-brand-primary/30 transition-all duration-500"
+              className="bg-white p-10 md:p-14 rounded-[3rem] border border-gray-200 shadow-sm flex flex-col relative overflow-hidden group hover:border-brand-primary/30 "
             >
               <div className="absolute -top-12 -left-12 w-24 h-24 bg-brand-primary/5 rounded-full blur-3xl group-hover:bg-brand-primary/10 transition-colors"></div>
               <div className="relative z-10">
@@ -95,7 +95,7 @@ export default function AboutContent() {
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 1 }}
-              className="bg-white p-10 md:p-14 rounded-[3rem] border border-gray-100 shadow-sm flex flex-col relative overflow-hidden group hover:border-brand-primary/30 transition-all duration-500"
+              className="bg-white p-10 md:p-14 rounded-[3rem] border border-gray-200 shadow-sm flex flex-col relative overflow-hidden group hover:border-brand-primary/30"
             >
               <div className="absolute -top-12 -left-12 w-24 h-24 bg-brand-primary/5 rounded-full blur-3xl group-hover:bg-brand-primary/10 transition-colors"></div>
               <div className="relative z-10">
