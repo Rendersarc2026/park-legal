@@ -3,37 +3,19 @@
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Calendar, ArrowRight } from 'lucide-react';
-
-const articles = [
-  {
-    id: 1,
-    title: "Understanding Estate Planning",
-    excerpt: "Key tips for securing your family's future through meticulous planning and documentation.",
-    date: "May 12, 2024",
-    category: "Legal Advice",
-    image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 2,
-    title: "Business Contract Essentials",
-    excerpt: "What to know before signing an agreement to protect your business interests and minimize risk.",
-    date: "Apr 28, 2024",
-    category: "Corporate",
-    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=800",
-  },
-  {
-    id: 3,
-    title: "Real Estate Market Update",
-    excerpt: "Recent trends and insights in the real estate sector and how they impact property law.",
-    date: "Apr 15, 2024",
-    category: "Property",
-    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800",
-  }
-];
-
-
+import { useState, useEffect } from 'react';
 
 export default function NewsArticles() {
+  const [articles, setArticles] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch('/api/admin/news').then(r => r.json()).then(data => {
+      if (Array.isArray(data)) setArticles(data);
+    });
+  }, []);
+
+  if (articles.length === 0) return null;
+
   return (
     <section className="py-32 bg-white relative overflow-hidden font-sans">
       <div className="max-w-6xl mx-auto px-6 relative z-10">
@@ -45,12 +27,6 @@ export default function NewsArticles() {
               News & Articles
             </h3>
           </div>
-          <motion.button 
-            whileHover={{ x: 5 }}
-            className="text-sm uppercase tracking-widest text-brand-primary font-light flex items-center gap-2 group transition-colors"
-          >
-            Explore All <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </motion.button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -65,9 +41,12 @@ export default function NewsArticles() {
             >
               <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[2rem] mb-8 shadow-sm group-hover:shadow-xl group-hover:shadow-brand-primary/10 transition-all duration-500">
                 <Image 
-                  src={article.image} 
+                  src={(article.imageUrl?.startsWith('/') || article.imageUrl?.startsWith('http')) 
+                    ? article.imageUrl 
+                    : "https://images.unsplash.com/photo-1589829085413-51de8ae18c73?auto=format&fit=crop&q=80&w=800"} 
                   alt={article.title}
                   fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   className="object-cover group-hover:scale-110 transition-transform duration-1000 ease-out"
                 />
                 <div className="absolute top-4 left-4">
