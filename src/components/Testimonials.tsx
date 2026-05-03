@@ -4,8 +4,15 @@ import { Quote, Star } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useState, useEffect } from 'react';
 
+interface Testimonial {
+  id: string;
+  quote: string;
+  stars: number;
+  author: string | null;
+}
+
 export default function Testimonials() {
-  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 
   useEffect(() => {
     fetch('/api/admin/testimonials').then(r => r.json()).then(data => {
@@ -49,7 +56,7 @@ export default function Testimonials() {
               className="max-w-3xl mx-auto"
             >
               <p className="text-[#666666] text-xl md:text-2xl leading-relaxed mb-6 font-light">
-                "{item.quote}"
+                &quot;{item.quote}&quot;
               </p>
               
               {item.author && (

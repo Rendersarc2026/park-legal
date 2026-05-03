@@ -5,9 +5,10 @@ export async function GET() {
   try {
     const testimonials = await prisma.testimonial.findMany({ orderBy: { createdAt: 'desc' } });
     return NextResponse.json(testimonials);
-  } catch (err: any) {
-    console.error('Prisma Fetch Error:', err);
-    return NextResponse.json({ error: 'Failed to fetch testimonials', details: err.message }, { status: 500 });
+  } catch (err) {
+    const error = err as Error;
+    console.error('Prisma Fetch Error:', error);
+    return NextResponse.json({ error: 'Failed to fetch testimonials', details: error.message }, { status: 500 });
   }
 }
 
@@ -22,9 +23,10 @@ export async function POST(request: Request) {
       },
     });
     return NextResponse.json(testimonial);
-  } catch (err: any) {
-    console.error('Prisma Create Error:', err);
-    return NextResponse.json({ error: 'Failed to create testimonial', details: err.message }, { status: 500 });
+  } catch (err) {
+    const error = err as Error;
+    console.error('Prisma Create Error:', error);
+    return NextResponse.json({ error: 'Failed to create testimonial', details: error.message }, { status: 500 });
   }
 }
 
@@ -45,12 +47,13 @@ export async function PUT(request: Request) {
       data: updateData,
     });
     return NextResponse.json(testimonial);
-  } catch (err: any) {
-    console.error('Prisma Update Error:', err);
-    if (err.code === 'P2025') {
+  } catch (err) {
+    const error = err as { code?: string; message?: string };
+    console.error('Prisma Update Error:', error);
+    if (error.code === 'P2025') {
       return NextResponse.json({ error: 'Testimonial not found' }, { status: 404 });
     }
-    return NextResponse.json({ error: 'Failed to update testimonial', details: err.message }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to update testimonial', details: error.message }, { status: 500 });
   }
 }
 
@@ -64,11 +67,12 @@ export async function DELETE(request: Request) {
 
     await prisma.testimonial.delete({ where: { id } });
     return NextResponse.json({ success: true });
-  } catch (err: any) {
-    console.error('Prisma Delete Error:', err);
-    if (err.code === 'P2025') {
+  } catch (err) {
+    const error = err as { code?: string; message?: string };
+    console.error('Prisma Delete Error:', error);
+    if (error.code === 'P2025') {
       return NextResponse.json({ error: 'Testimonial not found' }, { status: 404 });
     }
-    return NextResponse.json({ error: 'Failed to delete testimonial', details: err.message }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to delete testimonial', details: error.message }, { status: 500 });
   }
 }

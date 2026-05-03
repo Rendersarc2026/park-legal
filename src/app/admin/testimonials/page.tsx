@@ -30,8 +30,15 @@ const schema = yup.object({
 
 type FormData = yup.InferType<typeof schema>;
 
+interface Testimonial {
+  id: string;
+  quote: string;
+  stars: number;
+  author: string | null;
+}
+
 export default function AdminTestimonials() {
-  const [testimonials, setTestimonials] = useState<any[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -67,7 +74,7 @@ export default function AdminTestimonials() {
     fetchTestimonials();
   }, []);
 
-  const handleOpenModal = (item?: any) => {
+  const handleOpenModal = (item?: Testimonial) => {
     if (item) {
       setEditingId(item.id);
       reset({

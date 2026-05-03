@@ -39,7 +39,7 @@ export default function AdminAbout() {
   const [deleteConfig, setDeleteConfig] = useState<{ type: 'point' | 'stat', index: number } | null>(null);
 
   const { register, control, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
-    resolver: yupResolver(schema) as any, // Cast to any to avoid complex resolver type mismatch with array fields
+    resolver: yupResolver(schema),
     defaultValues: {
       description: '',
       stats: [],
@@ -70,7 +70,7 @@ export default function AdminAbout() {
           description: data.description || '',
           stats: data.stats || [],
           // Map string array to object array for the form
-          points: (data.points || []).map((p: string) => ({ text: p }))
+          points: (data.points || []).map((p: { text: string }) => ({ text: p.text || p }))
         });
       }
     } catch (err) {
@@ -128,7 +128,7 @@ export default function AdminAbout() {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-3xl font-light text-[#333333]">About Section</h1>
-          <p className="text-gray-500 mt-1">Manage the "Why Choose Park Legal?" content on the homepage.</p>
+          <p className="text-gray-500 mt-1">Manage the &quot;Why Choose Park Legal?&quot; content on the homepage.</p>
         </div>
         <button
           onClick={handleSubmit(onSubmit)}

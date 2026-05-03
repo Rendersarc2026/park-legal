@@ -1,14 +1,25 @@
 import { NextResponse } from 'next/server';
 import { SignJWT } from 'jose';
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: Request) {
   try {
-    const { username, password } = await request.json();
+    const body = await request.json();
+    const { username, password } = body;
 
-    const validUser = process.env.ADMIN_USERNAME || 'admin';
-    const validPass = process.env.ADMIN_PASSWORD || 'admin';
+    console.log('Login attempt for:', username);
 
-    if (username === validUser && password === validPass) {
+    const admin = await prisma.adminUser.findUnique({
+      where: { username },
+    });
+
+    if (!admin) {
+      console.log('Admin user not found:', username);
+      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    }
+
+    if (admin.password === password) {
+      console.log('Login successful for:', username);
       const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'supersecretjwtsecret1234567890');
       
       const token = await new SignJWT({ username })
@@ -29,8 +40,10 @@ export async function POST(request: Request) {
       return response;
     }
 
+    console.log('Invalid password for:', username);
     return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
   } catch (err) {
+    console.error('Login error:', err);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

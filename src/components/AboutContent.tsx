@@ -20,8 +20,14 @@ const staggerContainer = {
   }
 };
 
+interface AboutData {
+  description: string;
+  points: string[];
+  stats: { label: string; value: string }[];
+}
+
 export default function AboutContent() {
-  const [aboutData, setAboutData] = useState<any>(null);
+  const [aboutData, setAboutData] = useState<AboutData | null>(null);
 
   useEffect(() => {
     fetch('/api/admin/about').then(r => r.json()).then(data => {
@@ -198,7 +204,7 @@ export default function AboutContent() {
                   { label: "Cases Won", value: "100+" },
                   { label: "Client Dedication", value: "100%" },
                   { label: "Legal Support", value: "24/7" }
-                ]).map((stat: any, i: number) => (
+                ]).map((stat: { label: string; value: string }, i: number) => (
                   <div key={i} className="bg-gray-50 p-8 rounded-3xl border border-gray-200 hover:border-brand-primary/50 transition-colors duration-300 group">
                     <p className="text-4xl font-light text-brand-primary mb-2 group-hover:scale-110 transition-transform duration-300">{stat.value}</p>
                     <p className="text-xs text-[#666666] uppercase tracking-widest font-light">{stat.label}</p>

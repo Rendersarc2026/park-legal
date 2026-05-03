@@ -5,8 +5,17 @@ import { motion } from 'framer-motion';
 import { Calendar, ArrowRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
+interface Article {
+  id: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  category: string;
+  imageUrl: string;
+}
+
 export default function NewsArticles() {
-  const [articles, setArticles] = useState<any[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
 
   useEffect(() => {
     fetch('/api/admin/news').then(r => r.json()).then(data => {

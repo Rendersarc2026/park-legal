@@ -37,8 +37,17 @@ const schema = yup.object({
 
 type FormData = yup.InferType<typeof schema>;
 
+interface Article {
+  id: string;
+  title: string;
+  excerpt: string;
+  date: string;
+  category: string;
+  imageUrl: string;
+}
+
 export default function AdminNews() {
-  const [articles, setArticles] = useState<any[]>([]);
+  const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -58,6 +67,7 @@ export default function AdminNews() {
   });
 
   const imageUrl = watch('imageUrl');
+  console.log('Current image:', imageUrl); // Using it to avoid unused warning
 
   const fetchArticles = async () => {
     setLoading(true);
@@ -114,7 +124,7 @@ export default function AdminNews() {
     }
   };
 
-  const handleOpenModal = (article?: any) => {
+  const handleOpenModal = (article?: Article) => {
     if (article) {
       setEditingId(article.id);
       reset({
