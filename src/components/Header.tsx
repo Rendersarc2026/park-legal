@@ -21,8 +21,6 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
-
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
   const isActive = (path: string) => pathname === path;
@@ -60,13 +58,6 @@ export default function Header() {
               className={`relative text-sm uppercase tracking-[0.2em] font-medium transition-colors duration-300 hover:text-[#C53030] ${isActive(link.path) ? 'text-[#C53030]' : 'text-[#333333]'}`}
             >
               {link.name}
-              {isActive(link.path) && (
-                <motion.div
-                  layoutId="nav-underline"
-                  className="absolute -bottom-2 left-0 w-full h-0.5 bg-[#C53030]"
-                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                />
-              )}
             </Link>
           ))}
         </nav>
