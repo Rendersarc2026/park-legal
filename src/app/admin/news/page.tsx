@@ -35,7 +35,7 @@ const schema = yup.object({
     .required('Excerpt is required'),
   content: yup.string()
     .test('no-script', 'Script tags are not allowed', noScript)
-    .optional(),
+    .ensure(),
 }).required();
 
 type FormData = yup.InferType<typeof schema>;
@@ -77,7 +77,6 @@ export default function AdminNews() {
   });
 
   const imageUrl = watch('imageUrl');
-  console.log('Current image:', imageUrl); // Using it to avoid unused warning
 
   const fetchArticles = useCallback(async (page = 1) => {
     setLoading(true);
