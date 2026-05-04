@@ -2,6 +2,8 @@ import { prisma } from '@/lib/prisma';
 import { FileText, MessageSquare, Plus, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboard() {
   const [articleCount, testimonialCount, recentArticles] = await Promise.all([
     prisma.article.count({ where: { isActive: true } }),

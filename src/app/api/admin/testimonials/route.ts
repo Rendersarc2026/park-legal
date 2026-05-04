@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(request: Request) {
   try {
@@ -42,6 +43,7 @@ export async function POST(request: Request) {
         author: data.author || '',
       },
     });
+    revalidatePath('/admin');
     return NextResponse.json(testimonial);
   } catch (err) {
     const error = err as Error;
@@ -66,6 +68,7 @@ export async function PUT(request: Request) {
       where: { id },
       data: updateData,
     });
+    revalidatePath('/admin');
     return NextResponse.json(testimonial);
   } catch (err) {
     const error = err as { code?: string; message?: string };
@@ -89,6 +92,7 @@ export async function DELETE(request: Request) {
       where: { id },
       data: { isActive: false }
     });
+    revalidatePath('/admin');
     return NextResponse.json({ success: true });
   } catch (err) {
     const error = err as { code?: string; message?: string };

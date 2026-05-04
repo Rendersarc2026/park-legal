@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -50,6 +51,7 @@ export async function POST(request: Request) {
         imageUrl: data.imageUrl,
       },
     });
+    revalidatePath('/admin');
     return NextResponse.json(article);
   } catch (err) {
     const error = err as Error;
@@ -78,6 +80,7 @@ export async function PUT(request: Request) {
         imageUrl: updateData.imageUrl,
       },
     });
+    revalidatePath('/admin');
     return NextResponse.json(article);
   } catch (err) {
     const error = err as { code?: string; message?: string };
@@ -107,6 +110,7 @@ export async function DELETE(request: Request) {
       where: { id },
       data: { isActive: false }
     });
+    revalidatePath('/admin');
     return NextResponse.json({ success: true });
   } catch (err) {
     const error = err as { code?: string; message?: string };
