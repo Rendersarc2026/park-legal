@@ -63,10 +63,6 @@ export default function Expertise() {
               <p className="text-[#666666] font-light leading-relaxed mb-6">
                 {service.description}
               </p>
-              <div className="mt-auto pt-4 border-t border-gray-200 flex items-center justify-between opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                <span className="text-sm font-light text-brand-primary">Learn More</span>
-                <ArrowUpRight className="w-4 h-4 text-brand-primary" />
-              </div>
             </motion.div>
           ))}
         </motion.div>

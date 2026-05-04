@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -11,7 +13,10 @@ export async function GET(request: Request) {
     const [articles, total] = await Promise.all([
       prisma.article.findMany({
         where: { isActive: true },
-        orderBy: { createdAt: 'desc' },
+        orderBy: [
+          { date: 'desc' },
+          { createdAt: 'desc' }
+        ],
         skip,
         take: limit,
       }),
