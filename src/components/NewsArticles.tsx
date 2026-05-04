@@ -16,14 +16,28 @@ interface Article {
 
 export default function NewsArticles() {
   const [articles, setArticles] = useState<Article[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const limit = 3;
 
   useEffect(() => {
-    fetch('/api/admin/news').then(r => r.json()).then(data => {
-      if (Array.isArray(data)) setArticles(data);
-    });
-  }, []);
+    setLoading(true);
+    fetch(`/api/admin/news?page=${currentPage}&limit=${limit}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.articles) {
+          setArticles(data.articles);
+          setTotalPages(data.totalPages || 1);
+        } else if (Array.isArray(data)) {
+          setArticles(data);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, [currentPage]);
 
-  if (articles.length === 0) return null;
+  if (!loading && articles.length === 0) return null;
 
   return (
     <section className="py-32 bg-white relative overflow-hidden font-sans">
@@ -32,13 +46,13 @@ export default function NewsArticles() {
         <div className="mb-20 flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div className="max-w-2xl">
             <h2 className="text-sm uppercase tracking-[0.4em] text-brand-primary font-light mb-4">Latest Insights</h2>
-            <h3 className="text-4xl md:text-5xl font-light text-[#333333] leading-tight tracking-tight">
+            <h3 className="text-3xl md:text-4xl font-light text-[#333333] leading-tight tracking-tight">
               News & Articles
             </h3>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
           {articles.map((article, index) => (
             <motion.article 
               key={article.id} 
@@ -70,7 +84,7 @@ export default function NewsArticles() {
                   <Calendar className="w-3 h-3 text-brand-primary/60" />
                   {article.date}
                 </div>
-                <h4 className="text-2xl font-light text-[#333333] leading-tight group-hover:text-brand-primary transition-colors duration-300">
+                <h4 className="text-xl font-light text-[#333333] leading-tight group-hover:text-brand-primary transition-colors duration-300">
                   {article.title}
                 </h4>
                 <p className="text-[#666666] font-light leading-relaxed line-clamp-2 text-sm">
@@ -83,6 +97,45 @@ export default function NewsArticles() {
             </motion.article>
           ))}
         </div>
+
+        {/* Pagination Controls */}
+        {totalPages > 1 && (
+          <div className="mt-16 flex justify-center items-center gap-6">
+            <button
+              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              disabled={currentPage === 1}
+              className="p-3 rounded-full border border-gray-200 text-[#333333] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all duration-300"
+              aria-label="Previous page"
+            >
+              <ArrowRight className="w-5 h-5 rotate-180" />
+            </button>
+            
+            <div className="flex items-center gap-2">
+              {[...Array(totalPages)].map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setCurrentPage(i + 1)}
+                  className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
+                    currentPage === i + 1 
+                      ? "bg-brand-primary text-white shadow-lg shadow-brand-primary/20" 
+                      : "text-gray-400 hover:text-brand-primary hover:bg-gray-50"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              disabled={currentPage === totalPages}
+              className="p-3 rounded-full border border-gray-200 text-[#333333] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all duration-300"
+              aria-label="Next page"
+            >
+              <ArrowRight className="w-5 h-5" />
+            </button>
+          </div>
+        )}
 
       </div>
     </section>

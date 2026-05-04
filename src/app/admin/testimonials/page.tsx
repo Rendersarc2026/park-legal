@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Edit2, Trash2, X, Star } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -46,6 +46,11 @@ export default function AdminTestimonials() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [limit] = useState(5);
+
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -55,13 +60,15 @@ export default function AdminTestimonials() {
     }
   });
 
-  const fetchTestimonials = async () => {
+  const fetchTestimonials = async (page = 1) => {
     setLoading(true);
     try {
-      const res = await fetch('/api/admin/testimonials');
+      const res = await fetch(`/api/admin/testimonials?page=${page}&limit=${limit}`);
       if (res.ok) {
         const data = await res.json();
-        setTestimonials(data);
+        setTestimonials(data.testimonials);
+        setTotalPages(data.totalPages);
+        setCurrentPage(data.page);
       }
     } catch (err) {
       toast.error('Failed to fetch testimonials');
@@ -71,8 +78,8 @@ export default function AdminTestimonials() {
   };
 
   useEffect(() => {
-    fetchTestimonials();
-  }, []);
+    fetchTestimonials(currentPage);
+  }, [currentPage]);
 
   const handleOpenModal = (item?: Testimonial) => {
     if (item) {
@@ -103,7 +110,7 @@ export default function AdminTestimonials() {
       if (res.ok) {
         toast.success(editingId ? 'Testimonial updated successfully' : 'Testimonial created successfully');
         setIsModalOpen(false);
-        fetchTestimonials();
+        fetchTestimonials(currentPage);
       } else {
         const errorData = await res.json();
         toast.error(errorData.error || 'Failed to save testimonial');
@@ -130,7 +137,7 @@ export default function AdminTestimonials() {
 
       if (res.ok) {
         toast.success('Testimonial deleted successfully');
-        fetchTestimonials();
+        fetchTestimonials(currentPage);
       } else {
         const errorData = await res.json();
         toast.error(errorData.error || 'Failed to delete testimonial');
@@ -143,12 +150,12 @@ export default function AdminTestimonials() {
   };
 
   return (
-    <div className="p-8">
-      <div className="flex justify-between items-center mb-8">
+    <div>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <h1 className="text-3xl font-light text-[#333333]">Testimonials</h1>
         <button
           onClick={() => handleOpenModal()}
-          className="flex items-center gap-2 bg-brand-primary text-white px-4 py-2 rounded-xl hover:bg-brand-primary/90 transition-colors"
+          className="flex items-center gap-2 bg-gray-900 text-white px-4 py-2 rounded-xl hover:bg-black transition-all shadow-md shadow-gray-200 w-full sm:w-auto justify-center"
         >
           <Plus size={20} /> Add Testimonial
         </button>
@@ -158,7 +165,8 @@ export default function AdminTestimonials() {
         {loading ? (
           <div className="p-8 text-center text-gray-500">Loading...</div>
         ) : (
-          <table className="w-full text-left">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left min-w-[600px]">
             <thead className="bg-gray-50 text-gray-500 font-medium">
               <tr>
                 <th className="px-6 py-4">Quote</th>
@@ -170,10 +178,10 @@ export default function AdminTestimonials() {
             <tbody className="divide-y divide-gray-100">
               {testimonials.map((item) => (
                 <tr key={item.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 text-gray-900">
+                  <td className="px-6 py-4 text-gray-900 text-sm">
                     <p className="line-clamp-2">{item.quote}</p>
                   </td>
-                  <td className="px-6 py-4 text-gray-500">{item.author || '-'}</td>
+                  <td className="px-6 py-4 text-gray-500 text-sm">{item.author || '-'}</td>
                   <td className="px-6 py-4">
                     <div className="flex text-yellow-400">
                       {[...Array(item.stars)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}
@@ -196,6 +204,35 @@ export default function AdminTestimonials() {
               )}
             </tbody>
           </table>
+          </div>
+        )}
+        
+        {/* Pagination Controls */}
+        {!loading && testimonials.length > 0 && (
+          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/50">
+            <p className="text-sm text-gray-500">
+              Page <span className="font-medium text-gray-900">{currentPage}</span> of{' '}
+              <span className="font-medium text-gray-900">{totalPages}</span>
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="p-2 border rounded-lg hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title="Previous Page"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className="p-2 border rounded-lg hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title="Next Page"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
@@ -219,7 +256,7 @@ export default function AdminTestimonials() {
                 />
                 {errors.quote && <p className="text-red-500 text-xs mt-1">{errors.quote.message}</p>}
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Author Name (Optional)</label>
                   <input
@@ -245,7 +282,7 @@ export default function AdminTestimonials() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-2 bg-brand-primary text-white rounded-xl hover:bg-brand-primary/90 disabled:opacity-50"
+                  className="px-8 py-2.5 bg-gray-900 text-white rounded-xl font-medium hover:bg-black transition-all shadow-sm hover:shadow-md disabled:opacity-50"
                 >
                   {isSubmitting ? 'Saving...' : 'Save'}
                 </button>

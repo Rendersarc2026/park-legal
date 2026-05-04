@@ -1,10 +1,30 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const articles = await prisma.article.findMany({ orderBy: { createdAt: 'desc' } });
-    return NextResponse.json(articles);
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '5', 10);
+    const skip = (page - 1) * limit;
+
+    const [articles, total] = await Promise.all([
+      prisma.article.findMany({
+        where: { isActive: true },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      prisma.article.count({ where: { isActive: true } }),
+    ]);
+
+    return NextResponse.json({
+      articles,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (err) {
     const error = err as Error;
     console.error('Prisma Error:', error);
@@ -70,7 +90,10 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
 
-    await prisma.article.delete({ where: { id } });
+    await prisma.article.update({ 
+      where: { id },
+      data: { isActive: false }
+    });
     return NextResponse.json({ success: true });
   } catch (err) {
     const error = err as { code?: string; message?: string };

@@ -34,7 +34,7 @@ export default function Expertise() {
         <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
           <div className="max-w-2xl">
             <h2 className="text-sm uppercase tracking-[0.4em] text-brand-primary font-light mb-4">Our Specialization</h2>
-            <h3 className="text-4xl md:text-5xl font-light text-[#333333] leading-tight tracking-tight">
+            <h3 className="text-3xl md:text-4xl font-light text-[#333333] leading-tight tracking-tight">
               Comprehensive Legal Solutions Tailored to Your Needs
             </h3>
           </div>
@@ -57,7 +57,7 @@ export default function Expertise() {
               <div className="w-14 h-14 bg-[#f5f5f0] rounded-2xl flex items-center justify-center text-brand-primary mb-6 group-hover:bg-brand-primary group-hover:text-white transition-all duration-500">
                 <service.icon size={28} strokeWidth={1.5} />
               </div>
-              <h4 className="text-xl font-light text-[#333333] mb-3 group-hover:text-brand-primary transition-colors duration-300">
+              <h4 className="text-lg font-light text-[#333333] mb-3 group-hover:text-brand-primary transition-colors duration-300">
                 {service.label}
               </h4>
               <p className="text-[#666666] font-light leading-relaxed mb-6">

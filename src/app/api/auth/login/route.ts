@@ -1,24 +1,25 @@
 import { NextResponse } from 'next/server';
 import { SignJWT } from 'jose';
 import { prisma } from '@/lib/prisma';
+import bcrypt from 'bcryptjs';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { username, password } = body;
 
-    console.log('Login attempt for:', username);
-
     const admin = await prisma.adminUser.findUnique({
       where: { username },
     });
 
-    if (!admin) {
-      console.log('Admin user not found:', username);
+    if (!admin || !admin.isActive) {
+      console.log(`Admin user not found or inactive for username: "${username}"`);
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    if (admin.password === password) {
+    const isPasswordCorrect = await bcrypt.compare(password, admin.password);
+
+    if (isPasswordCorrect) {
       console.log('Login successful for:', username);
       const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'supersecretjwtsecret1234567890');
       

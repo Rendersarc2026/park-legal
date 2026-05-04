@@ -3,7 +3,9 @@ import { prisma } from '@/lib/prisma';
 
 export async function GET() {
   try {
-    const about = await prisma.aboutSection.findFirst();
+    const about = await prisma.aboutSection.findFirst({
+      where: { isActive: true }
+    });
     if (!about) {
       return NextResponse.json({
         description: 'We combine deep legal expertise with a practical understanding of the real-world challenges our clients face.',

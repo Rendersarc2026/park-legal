@@ -8,9 +8,10 @@ generator client {
 }
 
 model AdminUser {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  username String @unique
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  username String  @unique
   password String
+  isActive Boolean @default(true)
 }
 
 model Article {
@@ -21,6 +22,7 @@ model Article {
   date      String
   category  String
   imageUrl  String
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 }
 
@@ -29,6 +31,7 @@ model Testimonial {
   quote     String
   stars     Int      @default(5)
   author    String?
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 }
 
@@ -37,6 +40,7 @@ model AboutSection {
   description String
   stats       Json     
   points      String[] 
+  isActive    Boolean  @default(true)
 }
 
 model UploadedImage {
@@ -44,5 +48,6 @@ model UploadedImage {
   name      String
   type      String
   data      Bytes
+  isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 }

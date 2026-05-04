@@ -1,10 +1,30 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const testimonials = await prisma.testimonial.findMany({ orderBy: { createdAt: 'desc' } });
-    return NextResponse.json(testimonials);
+    const { searchParams } = new URL(request.url);
+    const page = parseInt(searchParams.get('page') || '1', 10);
+    const limit = parseInt(searchParams.get('limit') || '5', 10);
+    const skip = (page - 1) * limit;
+
+    const [testimonials, total] = await Promise.all([
+      prisma.testimonial.findMany({
+        where: { isActive: true },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      prisma.testimonial.count({ where: { isActive: true } }),
+    ]);
+
+    return NextResponse.json({
+      testimonials,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (err) {
     const error = err as Error;
     console.error('Prisma Fetch Error:', error);
@@ -65,7 +85,10 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: 'ID is required' }, { status: 400 });
     }
 
-    await prisma.testimonial.delete({ where: { id } });
+    await prisma.testimonial.update({ 
+      where: { id },
+      data: { isActive: false }
+    });
     return NextResponse.json({ success: true });
   } catch (err) {
     const error = err as { code?: string; message?: string };

@@ -8,8 +8,8 @@ export async function GET(
   try {
     const { id } = await params;
 
-    const image = await prisma.uploadedImage.findUnique({
-      where: { id },
+    const image = await prisma.uploadedImage.findFirst({
+      where: { id, isActive: true },
     });
 
     if (!image) {

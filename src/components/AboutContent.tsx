@@ -69,10 +69,10 @@ export default function AboutContent() {
             transition={{ duration: 0.8 }}
             className="text-center"
           >
-            <h1 className="text-5xl md:text-7xl font-light text-[#333333] mb-8 leading-tight tracking-tight">
+            <h1 className="text-4xl md:text-6xl font-light text-[#333333] mb-8 leading-tight tracking-tight">
               About Park Legal
             </h1>
-            <p className="text-xl md:text-2xl font-light text-[#666666] max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl font-light text-[#666666] max-w-3xl mx-auto leading-relaxed">
               Dedicated to delivering excellence in legal practice and safeguarding our clients&apos; interests with integrity and precision.
             </p>
           </motion.div>
@@ -138,7 +138,7 @@ export default function AboutContent() {
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-20">
             <h2 className="text-sm uppercase tracking-[0.4em] text-brand-primary font-light mb-4">The Foundation</h2>
-            <h3 className="text-4xl md:text-5xl font-light text-[#333333]">Our Core Values</h3>
+            <h3 className="text-3xl md:text-4xl font-light text-[#333333]">Our Core Values</h3>
           </div>
 
           <motion.div
@@ -157,7 +157,7 @@ export default function AboutContent() {
                 <div className="w-14 h-14 bg-brand-primary/5 rounded-2xl flex items-center justify-center text-brand-primary mb-8 group-hover:scale-110 group-hover:bg-brand-primary group-hover:text-white transition-all duration-500">
                   {value.icon}
                 </div>
-                <h4 className="text-2xl font-light text-[#333333] mb-4">{value.title}</h4>
+                <h4 className="text-xl font-light text-[#333333] mb-4">{value.title}</h4>
                 <p className="text-[#666666] leading-relaxed font-light">{value.description}</p>
               </motion.div>
             ))}
@@ -177,8 +177,8 @@ export default function AboutContent() {
           >
             <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
               <div>
-                <h2 className="text-4xl md:text-5xl font-light mb-8 leading-tight">Why Choose Park Legal?</h2>
-                <p className="text-[#666666] text-xl mb-12 leading-relaxed font-light">
+                <h2 className="text-3xl md:text-4xl font-light mb-8 leading-tight">Why Choose Park Legal?</h2>
+                <p className="text-[#666666] text-lg mb-12 leading-relaxed font-light">
                   {aboutData?.description || "We combine deep legal expertise with a practical understanding of the real-world challenges our clients face. Our proactive approach ensures that we not only address current legal issues but also help prevent future complications."}
                 </p>
                 <div className="grid sm:grid-cols-2 gap-6">

@@ -124,8 +124,8 @@ export default function AdminAbout() {
   if (loading) return <div className="p-8 text-center text-gray-500">Loading section data...</div>;
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
+    <div className="max-w-6xl mx-auto">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-light text-[#333333]">About Section</h1>
           <p className="text-gray-500 mt-1">Manage the &quot;Why Choose Park Legal?&quot; content on the homepage.</p>
@@ -133,7 +133,7 @@ export default function AdminAbout() {
         <button
           onClick={handleSubmit(onSubmit)}
           disabled={isSubmitting}
-          className="flex items-center gap-2 bg-brand-primary text-white px-6 py-2 rounded-xl hover:bg-brand-primary/90 transition-colors disabled:opacity-50 shadow-lg shadow-brand-primary/20"
+          className="flex items-center gap-2 bg-gray-900 text-white px-8 py-2.5 rounded-xl font-medium hover:bg-black transition-all disabled:opacity-50 shadow-lg shadow-gray-200 w-full sm:w-auto justify-center"
         >
           <Save size={20} /> {isSubmitting ? 'Saving...' : 'Save Changes'}
         </button>
@@ -141,7 +141,7 @@ export default function AdminAbout() {
 
       <div className="space-y-8">
         {/* Main Description */}
-        <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm">
+        <div className="bg-white p-6 sm:p-8 rounded-[2rem] border border-gray-100 shadow-sm">
           <h2 className="text-lg font-medium mb-4 flex items-center gap-2 text-gray-800">
             <span className="w-1.5 h-6 bg-brand-primary rounded-full"></span>
             Section Description
@@ -157,7 +157,7 @@ export default function AdminAbout() {
 
         <div className="grid lg:grid-cols-2 gap-8 items-start">
           {/* Key Points */}
-          <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm">
+          <div className="bg-white p-6 sm:p-8 rounded-[2rem] border border-gray-100 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-medium flex items-center gap-2 text-gray-800">
                 <span className="w-1.5 h-6 bg-brand-primary rounded-full"></span>
@@ -204,7 +204,7 @@ export default function AdminAbout() {
           </div>
 
           {/* Stats */}
-          <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm">
+          <div className="bg-white p-6 sm:p-8 rounded-[2rem] border border-gray-100 shadow-sm">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-lg font-medium flex items-center gap-2 text-gray-800">
                 <span className="w-1.5 h-6 bg-brand-primary rounded-full"></span>
@@ -223,12 +223,12 @@ export default function AdminAbout() {
               {statFields.map((field, i) => (
                 <div key={field.id} className="space-y-2">
                   <div className="flex gap-2">
-                    <div className="w-24">
+                    <div className="w-20 sm:w-24">
                       <input
                         {...register(`stats.${i}.value` as const)}
                         type="text"
                         placeholder="Value"
-                        className={`w-full px-3 py-2.5 border rounded-xl text-center focus:ring-2 focus:ring-brand-primary/20 transition-all ${errors.stats?.[i]?.value ? 'border-red-500' : 'border-gray-200'}`}
+                        className={`w-full px-2 sm:px-3 py-2.5 border rounded-xl text-center focus:ring-2 focus:ring-brand-primary/20 transition-all ${errors.stats?.[i]?.value ? 'border-red-500' : 'border-gray-200'}`}
                       />
                     </div>
                     <div className="flex-1">
@@ -249,7 +249,7 @@ export default function AdminAbout() {
                   </div>
                   {(errors.stats?.[i]?.value || errors.stats?.[i]?.label) && (
                     <div className="flex gap-2 ml-1">
-                      {errors.stats?.[i]?.value && <p className="text-red-500 text-[10px] w-24">{errors.stats[i]?.value?.message}</p>}
+                      {errors.stats?.[i]?.value && <p className="text-red-500 text-[10px] w-20 sm:w-24">{errors.stats[i]?.value?.message}</p>}
                       {errors.stats?.[i]?.label && <p className="text-red-500 text-[10px] flex-1">{errors.stats[i]?.label?.message}</p>}
                     </div>
                   )}
@@ -264,6 +264,7 @@ export default function AdminAbout() {
           </div>
         </div>
       </div>
+
 
       <ConfirmationModal
         isOpen={isDeleteModalOpen}
