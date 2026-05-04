@@ -54,7 +54,6 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Decorative gradient at bottom to blend with next section */}
       <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-background to-transparent z-10"></div>
     </section>
   );
