@@ -30,7 +30,7 @@ export default function AdminLogin() {
         const data = await res.json();
         setError(data.error || 'Login failed');
       }
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
     } finally {
       setLoading(false);
@@ -59,7 +59,10 @@ export default function AdminLogin() {
             <input
               type="text"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => {
+                setUsername(e.target.value);
+                if (error) setError('');
+              }}
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all"
               required
             />
@@ -69,15 +72,18 @@ export default function AdminLogin() {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                if (error) setError('');
+              }}
               className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all"
               required
             />
           </div>
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-gray-900 text-white py-4 rounded-xl font-medium hover:bg-black transition-all shadow-lg shadow-gray-200 disabled:opacity-70"
+            disabled={loading || error.toLowerCase().includes('too many failed attempts')}
+            className="w-full bg-gray-900 text-white py-4 rounded-xl font-medium hover:bg-black transition-all shadow-lg shadow-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

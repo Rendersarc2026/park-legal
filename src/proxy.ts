@@ -21,6 +21,17 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // If already logged in, don't allow access to login page
+  if (request.nextUrl.pathname === '/admin/login' && token) {
+    try {
+      const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'supersecretjwtsecret1234567890');
+      await jwtVerify(token, secret);
+      return NextResponse.redirect(new URL('/admin', request.url));
+    } catch (err) {
+      // Token invalid, allow login page
+    }
+  }
+
   return NextResponse.next();
 }
 

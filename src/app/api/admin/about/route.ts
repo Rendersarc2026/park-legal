@@ -24,7 +24,7 @@ export async function GET() {
       });
     }
     return NextResponse.json(about);
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch about section' }, { status: 500 });
   }
 }
@@ -54,7 +54,7 @@ export async function POST(request: Request) {
       });
       return NextResponse.json(created);
     }
-  } catch (err) {
+  } catch {
     return NextResponse.json({ error: 'Failed to update about section' }, { status: 500 });
   }
 }

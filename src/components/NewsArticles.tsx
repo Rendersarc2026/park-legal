@@ -22,7 +22,9 @@ export default function NewsArticles() {
   const limit = 3;
 
   useEffect(() => {
-    setLoading(true);
+    if (!loading) {
+      Promise.resolve().then(() => setLoading(true));
+    }
     fetch(`/api/admin/news?page=${currentPage}&limit=${limit}`)
       .then(r => r.json())
       .then(data => {
@@ -35,7 +37,7 @@ export default function NewsArticles() {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [currentPage]);
+  }, [currentPage, loading]);
 
   if (!loading && articles.length === 0) return null;
 

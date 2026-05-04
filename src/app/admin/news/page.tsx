@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus, Edit2, Trash2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -74,7 +74,7 @@ export default function AdminNews() {
   const imageUrl = watch('imageUrl');
   console.log('Current image:', imageUrl); // Using it to avoid unused warning
 
-  const fetchArticles = async (page = 1) => {
+  const fetchArticles = useCallback(async (page = 1) => {
     setLoading(true);
     try {
       const res = await fetch(`/api/admin/news?page=${page}&limit=${limit}`);
@@ -84,16 +84,16 @@ export default function AdminNews() {
         setTotalPages(data.totalPages);
         setCurrentPage(data.page);
       }
-    } catch (err) {
+    } catch {
       toast.error('Failed to fetch articles');
     } finally {
       setLoading(false);
     }
-  };
+  }, [limit]);
 
   useEffect(() => {
     fetchArticles(currentPage);
-  }, [currentPage]);
+  }, [currentPage, fetchArticles]);
 
   const [uploading, setUploading] = useState(false);
 
@@ -124,7 +124,7 @@ export default function AdminNews() {
       } else {
         toast.error('Upload failed');
       }
-    } catch (err) {
+    } catch {
       toast.error('Upload error');
     } finally {
       setUploading(false);
@@ -173,7 +173,7 @@ export default function AdminNews() {
         const errorData = await res.json();
         toast.error(errorData.error || 'Failed to save article');
       }
-    } catch (err) {
+    } catch {
       toast.error('An error occurred while saving');
     }
   };
@@ -200,7 +200,7 @@ export default function AdminNews() {
         const errorData = await res.json();
         toast.error(errorData.error || 'Failed to delete article');
       }
-    } catch (err) {
+    } catch {
       toast.error('An error occurred while deleting');
     } finally {
       setItemToDelete(null);

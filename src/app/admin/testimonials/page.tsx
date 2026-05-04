@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Plus, Edit2, Trash2, X, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -60,7 +60,7 @@ export default function AdminTestimonials() {
     }
   });
 
-  const fetchTestimonials = async (page = 1) => {
+  const fetchTestimonials = useCallback(async (page = 1) => {
     setLoading(true);
     try {
       const res = await fetch(`/api/admin/testimonials?page=${page}&limit=${limit}`);
@@ -70,16 +70,16 @@ export default function AdminTestimonials() {
         setTotalPages(data.totalPages);
         setCurrentPage(data.page);
       }
-    } catch (err) {
+    } catch {
       toast.error('Failed to fetch testimonials');
     } finally {
       setLoading(false);
     }
-  };
+  }, [limit]);
 
   useEffect(() => {
     fetchTestimonials(currentPage);
-  }, [currentPage]);
+  }, [currentPage, fetchTestimonials]);
 
   const handleOpenModal = (item?: Testimonial) => {
     if (item) {
@@ -115,7 +115,7 @@ export default function AdminTestimonials() {
         const errorData = await res.json();
         toast.error(errorData.error || 'Failed to save testimonial');
       }
-    } catch (err) {
+    } catch {
       toast.error('An error occurred while saving');
     }
   };
@@ -142,7 +142,7 @@ export default function AdminTestimonials() {
         const errorData = await res.json();
         toast.error(errorData.error || 'Failed to delete testimonial');
       }
-    } catch (err) {
+    } catch {
       toast.error('An error occurred while deleting');
     } finally {
       setItemToDelete(null);

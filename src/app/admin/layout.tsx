@@ -12,16 +12,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Close sidebar on route change
   useEffect(() => {
-    setIsSidebarOpen(false);
-  }, [pathname]);
+    if (isSidebarOpen) {
+      Promise.resolve().then(() => setIsSidebarOpen(false));
+    }
+  }, [pathname, isSidebarOpen]);
 
   if (pathname === '/admin/login') {
     return <>{children}</>;
   }
 
-  const handleLogout = () => {
-    document.cookie = 'admin_token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT';
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (err) {
+      console.error('Logout error:', err);
+    }
     router.push('/admin/login');
+    router.refresh();
   };
 
   const navItems = [

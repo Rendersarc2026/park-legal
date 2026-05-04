@@ -51,3 +51,11 @@ model UploadedImage {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 }
+
+model LoginAttempt {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  username  String   @unique
+  attempts  Int      @default(0)
+  lockUntil DateTime?
+  updatedAt DateTime @updatedAt
+}

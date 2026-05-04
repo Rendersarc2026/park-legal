@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Save, Plus, Trash2, X } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Save, Plus, Trash2 } from 'lucide-react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -57,11 +57,7 @@ export default function AdminAbout() {
     name: "points"
   });
 
-  useEffect(() => {
-    fetchAbout();
-  }, []);
-
-  const fetchAbout = async () => {
+  const fetchAbout = useCallback(async () => {
     try {
       const res = await fetch('/api/admin/about');
       if (res.ok) {
@@ -73,12 +69,16 @@ export default function AdminAbout() {
           points: (data.points || []).map((p: { text: string }) => ({ text: p.text || p }))
         });
       }
-    } catch (err) {
+    } catch {
       toast.error('Failed to fetch data');
     } finally {
       setLoading(false);
     }
-  };
+  }, [reset]);
+
+  useEffect(() => {
+    fetchAbout();
+  }, [fetchAbout]);
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -100,7 +100,7 @@ export default function AdminAbout() {
         const errorData = await res.json();
         toast.error(errorData.error || 'Failed to save changes');
       }
-    } catch (err) {
+    } catch {
       toast.error('An error occurred while saving');
     }
   };
