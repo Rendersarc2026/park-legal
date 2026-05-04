@@ -39,6 +39,7 @@ export async function POST(request: Request) {
       data: {
         title: data.title,
         excerpt: data.excerpt,
+        content: data.content,
         date: data.date,
         category: data.category,
         imageUrl: data.imageUrl,
@@ -63,7 +64,14 @@ export async function PUT(request: Request) {
 
     const article = await prisma.article.update({
       where: { id },
-      data: updateData,
+      data: {
+        title: updateData.title,
+        excerpt: updateData.excerpt,
+        content: updateData.content,
+        date: updateData.date,
+        category: updateData.category,
+        imageUrl: updateData.imageUrl,
+      },
     });
     return NextResponse.json(article);
   } catch (err) {

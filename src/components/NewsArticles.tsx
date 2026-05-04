@@ -9,6 +9,7 @@ interface Article {
   id: string;
   title: string;
   excerpt: string;
+  content?: string;
   date: string;
   category: string;
   imageUrl: string;
@@ -19,6 +20,7 @@ export default function NewsArticles() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const limit = 3;
 
   useEffect(() => {
@@ -37,7 +39,18 @@ export default function NewsArticles() {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, [currentPage, loading]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
+
+  const handleArticleClick = (article: Article) => {
+    setSelectedArticle(article);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeModal = () => {
+    setSelectedArticle(null);
+    document.body.style.overflow = 'unset';
+  };
 
   if (!loading && articles.length === 0) return null;
 
@@ -63,8 +76,9 @@ export default function NewsArticles() {
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: index * 0.1 }}
               className="group cursor-pointer"
+              onClick={() => handleArticleClick(article)}
             >
-              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[2rem] mb-8 shadow-sm group-hover:shadow-xl group-hover:shadow-brand-primary/10 transition-all duration-500">
+              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[2rem] mb-8 shadow-sm group-hover:shadow-xl group-hover:shadow-brand-primary/10 transition-all duration-500 bg-gray-50">
                 <Image 
                   src={(article.imageUrl?.startsWith('/') || article.imageUrl?.startsWith('http')) 
                     ? article.imageUrl 
@@ -72,7 +86,7 @@ export default function NewsArticles() {
                   alt={article.title}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover group-hover:scale-110 transition-transform duration-1000 ease-out"
+                  className="object-contain group-hover:scale-105 transition-transform duration-1000 ease-out"
                 />
                 <div className="absolute top-4 left-4">
                   <span className="px-4 py-1.5 bg-white/90 backdrop-blur-md rounded-full text-[10px] uppercase tracking-widest font-light text-brand-primary border border-white/20 shadow-sm">
@@ -104,7 +118,10 @@ export default function NewsArticles() {
         {totalPages > 1 && (
           <div className="mt-16 flex justify-center items-center gap-6">
             <button
-              onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentPage(prev => Math.max(1, prev - 1));
+              }}
               disabled={currentPage === 1}
               className="p-3 rounded-full border border-gray-200 text-[#333333] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all duration-300"
               aria-label="Previous page"
@@ -116,7 +133,10 @@ export default function NewsArticles() {
               {[...Array(totalPages)].map((_, i) => (
                 <button
                   key={i}
-                  onClick={() => setCurrentPage(i + 1)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setCurrentPage(i + 1);
+                  }}
                   className={`w-10 h-10 rounded-full text-sm font-medium transition-all duration-300 ${
                     currentPage === i + 1 
                       ? "bg-brand-primary text-white shadow-lg shadow-brand-primary/20" 
@@ -129,7 +149,10 @@ export default function NewsArticles() {
             </div>
 
             <button
-              onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+              onClick={(e) => {
+                e.stopPropagation();
+                setCurrentPage(prev => Math.min(totalPages, prev + 1));
+              }}
               disabled={currentPage === totalPages}
               className="p-3 rounded-full border border-gray-200 text-[#333333] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all duration-300"
               aria-label="Next page"
@@ -140,6 +163,86 @@ export default function NewsArticles() {
         )}
 
       </div>
+
+      {/* Article Modal */}
+      {selectedArticle && (
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
+        >
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={closeModal}
+          />
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className="relative bg-white w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button 
+              onClick={closeModal}
+              className="absolute top-6 right-6 z-20 p-3 bg-white/80 backdrop-blur-md rounded-full text-gray-500 hover:text-black transition-colors shadow-sm"
+            >
+              <ArrowRight className="w-5 h-5 rotate-180" />
+            </button>
+
+            <div className="relative w-full aspect-[21/9] md:aspect-[21/7] overflow-hidden bg-gray-50 border-b border-gray-100">
+              <Image 
+                src={(selectedArticle.imageUrl?.startsWith('/') || selectedArticle.imageUrl?.startsWith('http')) 
+                  ? selectedArticle.imageUrl 
+                  : "https://images.unsplash.com/photo-1589829085413-51de8ae18c73?auto=format&fit=crop&q=80&w=800"} 
+                alt={selectedArticle.title}
+                fill
+                className="object-contain"
+              />
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-8 md:p-12 bg-white">
+              <div className="max-w-3xl mx-auto">
+                <div className="flex items-center gap-4 mb-6">
+                  <span className="px-4 py-1.5 bg-brand-primary/10 text-brand-primary rounded-full text-[10px] uppercase tracking-widest font-medium">
+                    {selectedArticle.category}
+                  </span>
+                  <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-[#666666] font-light">
+                    <Calendar className="w-3 h-3" />
+                    {selectedArticle.date}
+                  </div>
+                </div>
+
+                <h2 className="text-2xl md:text-4xl font-light text-[#333333] leading-tight mb-8">
+                  {selectedArticle.title}
+                </h2>
+
+                <div className="prose prose-sm md:prose-base max-w-none text-[#555555] font-light leading-relaxed space-y-6">
+                  {selectedArticle.content ? (
+                    selectedArticle.content.split('\n').map((paragraph, i) => (
+                      <p key={i}>{paragraph}</p>
+                    ))
+                  ) : (
+                    <p>{selectedArticle.excerpt}</p>
+                  )}
+                </div>
+                
+                <div className="mt-12 pt-8 border-t border-gray-100 flex justify-between items-center">
+                  <div className="text-xs text-[#999999] italic">
+                    Park Legal Insights
+                  </div>
+                  <button 
+                    onClick={closeModal}
+                    className="text-xs font-medium text-brand-primary hover:underline"
+                  >
+                    Close Article
+                  </button>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
     </section>
   );
 }

@@ -33,6 +33,9 @@ const schema = yup.object({
     .min(10, 'Excerpt must be at least 10 characters')
     .test('no-script', 'Script tags are not allowed', noScript)
     .required('Excerpt is required'),
+  content: yup.string()
+    .test('no-script', 'Script tags are not allowed', noScript)
+    .optional(),
 }).required();
 
 type FormData = yup.InferType<typeof schema>;
@@ -41,6 +44,7 @@ interface Article {
   id: string;
   title: string;
   excerpt: string;
+  content?: string;
   date: string;
   category: string;
   imageUrl: string;
@@ -65,6 +69,7 @@ export default function AdminNews() {
     defaultValues: {
       title: '',
       excerpt: '',
+      content: '',
       date: '',
       category: '',
       imageUrl: '',
@@ -137,6 +142,7 @@ export default function AdminNews() {
       reset({
         title: article.title,
         excerpt: article.excerpt,
+        content: article.content || '',
         date: article.date, // Now stored as YYYY-MM-DD
         category: article.category,
         imageUrl: article.imageUrl,
@@ -146,6 +152,7 @@ export default function AdminNews() {
       reset({ 
         title: '', 
         excerpt: '', 
+        content: '',
         date: new Date().toISOString().split('T')[0], 
         category: '', 
         imageUrl: '', 
@@ -341,6 +348,15 @@ export default function AdminNews() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+                {imageUrl && (
+                  <div className="relative aspect-[16/9] w-full mb-4 rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
+                    <img 
+                      src={imageUrl} 
+                      alt="Preview" 
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                )}
                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center">
                   <input 
                     {...register('imageUrl')}
@@ -364,6 +380,16 @@ export default function AdminNews() {
                   className={`w-full px-4 py-2 border rounded-xl ${errors.excerpt ? 'border-red-500' : ''}`} 
                 />
                 {errors.excerpt && <p className="text-red-500 text-xs mt-1">{errors.excerpt.message}</p>}
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Full Content</label>
+                <textarea 
+                  {...register('content')}
+                  rows={8} 
+                  className={`w-full px-4 py-2 border rounded-xl ${errors.content ? 'border-red-500' : ''}`} 
+                  placeholder="Paste the full article content here..."
+                />
+                {errors.content && <p className="text-red-500 text-xs mt-1">{errors.content.message}</p>}
               </div>
               <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 mt-6">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-2 border rounded-xl hover:bg-gray-50">Cancel</button>
