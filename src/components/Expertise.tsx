@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import {
   Scroll,
   Landmark,
@@ -150,7 +150,7 @@ const specializations: Specialization[] = [
   }
 ];
 
-const containerVariants = {
+const containerVariants: Variants = {
   initial: {},
   whileInView: {
     transition: {
@@ -159,7 +159,7 @@ const containerVariants = {
   }
 };
 
-const itemVariants = {
+const itemVariants: Variants = {
   initial: { opacity: 0, y: 30 },
   whileInView: { 
     opacity: 1, 
