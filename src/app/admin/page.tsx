@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { FileText, MessageSquare, Plus, ArrowRight } from 'lucide-react';
+import { FileText, MessageSquare, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
@@ -76,40 +76,12 @@ export default async function AdminDashboard() {
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="space-y-6">
-          <div className="bg-[#111111] text-white p-8 rounded-[2rem] shadow-xl shadow-gray-200">
-            <h2 className="text-xl font-medium mb-4">Quick Actions</h2>
-            <div className="space-y-3">
-              <Link 
-                href="/admin/news" 
-                className="flex items-center justify-between w-full p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-colors group"
-              >
-                <div className="flex items-center gap-3">
-                  <Plus size={20} className="text-brand-primary" />
-                  <span className="font-medium">New Article</span>
-                </div>
-                <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-              </Link>
-              <Link 
-                href="/admin/testimonials" 
-                className="flex items-center justify-between w-full p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-colors group"
-              >
-                <div className="flex items-center gap-3">
-                  <Plus size={20} className="text-brand-primary" />
-                  <span className="font-medium">New Testimonial</span>
-                </div>
-                <ArrowRight size={16} className="opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-              </Link>
-            </div>
-          </div>
-
-          <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm">
-            <h2 className="text-lg font-medium text-gray-800 mb-4">Admin Help</h2>
-            <p className="text-sm text-gray-500 leading-relaxed">
-              Need assistance? Use the sidebar to navigate between sections. For image uploads, ensure files are under 5MB for optimal performance.
-            </p>
-          </div>
+        {/* Admin Help */}
+        <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm h-fit">
+          <h2 className="text-lg font-medium text-gray-800 mb-4">Admin Help</h2>
+          <p className="text-sm text-gray-500 leading-relaxed">
+            Need assistance? Use the sidebar to navigate between sections. For image uploads, ensure files are under 5MB for optimal performance.
+          </p>
         </div>
       </div>
     </div>

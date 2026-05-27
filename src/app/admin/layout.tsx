@@ -12,10 +12,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Close sidebar on route change
   useEffect(() => {
-    if (isSidebarOpen) {
-      Promise.resolve().then(() => setIsSidebarOpen(false));
-    }
-  }, [pathname, isSidebarOpen]);
+    setIsSidebarOpen(false);
+  }, [pathname]);
 
   if (pathname === '/admin/login') {
     return <>{children}</>;
