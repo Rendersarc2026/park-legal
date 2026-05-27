@@ -28,7 +28,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {stats.map((stat) => (
           <div key={stat.name} className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center gap-4">
@@ -46,14 +46,14 @@ export default async function AdminDashboard() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Recent Articles */}
-        <div className="lg:col-span-2 bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-gray-50 flex justify-between items-center">
+        <div className="lg:col-span-2 bg-white rounded-[2rem] border border-gray-100 shadow-sm overflow-hidden flex flex-col h-[420px]">
+          <div className="p-6 border-b border-gray-50 flex justify-between items-center shrink-0">
             <h2 className="text-lg font-medium text-gray-800">Recent Articles</h2>
             <Link href="/admin/news" className="text-sm text-brand-primary hover:underline flex items-center gap-1">
               View all <ArrowRight size={14} />
             </Link>
           </div>
-          <div className="divide-y divide-gray-50">
+          <div className="divide-y divide-gray-50 flex-1 overflow-y-auto pr-1 custom-scrollbar">
             {recentArticles.map((article) => (
               <div key={article.id} className="p-6 hover:bg-gray-50 transition-colors">
                 <div className="flex justify-between items-start gap-4">
@@ -65,14 +65,11 @@ export default async function AdminDashboard() {
                       <span>{article.date}</span>
                     </div>
                   </div>
-                  <Link href="/admin/news" className="p-2 text-gray-400 hover:text-brand-primary">
-                    <Plus size={18} className="rotate-45" /> {/* Placeholder for detail link */}
-                  </Link>
                 </div>
               </div>
             ))}
             {recentArticles.length === 0 && (
-              <div className="p-12 text-center text-gray-400 italic">
+              <div className="p-12 text-center text-gray-400 italic h-full flex items-center justify-center">
                 No recent articles found.
               </div>
             )}

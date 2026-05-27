@@ -161,18 +161,18 @@ export default function AdminTestimonials() {
         </button>
       </div>
 
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-220px)] min-h-[460px]">
         {loading ? (
-          <div className="p-8 text-center text-gray-500">Loading...</div>
+          <div className="p-8 text-center text-gray-500 flex-1 flex items-center justify-center">Loading...</div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="overflow-auto flex-1">
             <table className="w-full text-left min-w-[600px]">
-            <thead className="bg-gray-50 text-gray-500 font-medium">
+            <thead className="bg-gray-50 text-gray-500 font-medium sticky top-0 z-10 border-b border-gray-100">
               <tr>
-                <th className="px-6 py-4">Quote</th>
-                <th className="px-6 py-4 w-32">Author</th>
-                <th className="px-6 py-4 w-32">Stars</th>
-                <th className="px-6 py-4 text-right w-32">Actions</th>
+                <th className="px-6 py-4 bg-gray-50">Quote</th>
+                <th className="px-6 py-4 w-32 bg-gray-50">Author</th>
+                <th className="px-6 py-4 w-32 bg-gray-50">Stars</th>
+                <th className="px-6 py-4 text-right w-32 bg-gray-50">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -209,7 +209,7 @@ export default function AdminTestimonials() {
         
         {/* Pagination Controls */}
         {!loading && testimonials.length > 0 && (
-          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/50">
+          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/50 shrink-0">
             <p className="text-sm text-gray-500">
               Page <span className="font-medium text-gray-900">{currentPage}</span> of{' '}
               <span className="font-medium text-gray-900">{totalPages}</span>
