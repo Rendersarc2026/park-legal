@@ -1,11 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
+// Load environment variables natively in Node.js
+if (typeof process.loadEnvFile === 'function') {
+  process.loadEnvFile();
+}
+
 const prisma = new PrismaClient();
 
 async function main() {
-  const username = 'admin';
-  const plainPassword = 'admin'; // The user requested this
+  const username = process.env.ADMIN_USERNAME;
+  const plainPassword = process.env.ADMIN_PASSWORD;
+
+  if (!username || !plainPassword) {
+    throw new Error('ADMIN_USERNAME and ADMIN_PASSWORD environment variables must be defined in .env');
+  }
+
   const hashedPassword = await bcrypt.hash(plainPassword, 10);
 
   console.log('Seeding admin user...');
