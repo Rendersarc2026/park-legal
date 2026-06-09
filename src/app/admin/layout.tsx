@@ -2,13 +2,15 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LayoutDashboard, FileText, MessageSquare, Settings, LogOut, Menu, X, Phone } from 'lucide-react';
+import { LayoutDashboard, FileText, MessageSquare, Settings, LogOut, Menu, X, Phone, KeyRound } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import ChangePasswordModal from '@/components/ChangePasswordModal';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
   // Close sidebar on route change
   useEffect(() => {
@@ -88,7 +90,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             );
           })}
         </nav>
-        <div className="p-4 border-t border-gray-100">
+        <div className="p-4 border-t border-gray-100 space-y-1">
+          <button onClick={() => setIsChangePasswordOpen(true)} className="flex items-center space-x-3 px-4 py-3 rounded-xl w-full text-gray-600 hover:bg-gray-50 transition-colors">
+            <KeyRound size={20} />
+            <span className="font-medium">Change Password</span>
+          </button>
           <button onClick={handleLogout} className="flex items-center space-x-3 px-4 py-3 rounded-xl w-full text-red-600 hover:bg-red-50 transition-colors">
             <LogOut size={20} />
             <span className="font-medium">Logout</span>
@@ -118,6 +124,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </div>
         </main>
       </div>
+
+      <ChangePasswordModal
+        isOpen={isChangePasswordOpen}
+        onClose={() => setIsChangePasswordOpen(false)}
+      />
     </div>
   );
 }
