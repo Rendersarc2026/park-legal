@@ -1,8 +1,24 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, MapPin, Phone, ArrowUpRight } from 'lucide-react';
+import { prisma } from '@/lib/prisma';
 
-export default function Footer() {
+export default async function Footer() {
+  let contact = null;
+  try {
+    if (prisma && prisma.contactDetails) {
+      contact = await prisma.contactDetails.findFirst({
+        where: { isActive: true }
+      });
+    }
+  } catch (err) {
+    console.error('Error fetching contact details in Footer:', err);
+  }
+
+  const displayAddress = contact?.address || "";
+  const displayEmail = contact?.email || "";
+  const displayPhone = contact?.phone || "";
+
   return (
     <footer className="pt-24 pb-12 bg-white border-t border-gray-200 font-sans">
       <div className="max-w-6xl mx-auto px-6">
@@ -51,19 +67,19 @@ export default function Footer() {
               <li className="flex gap-3">
                 <MapPin className="w-4 h-4 text-brand-primary shrink-0" />
                 <span className="leading-relaxed">
-                  1st Floor, Johns Corner Building, Judges Ave, Kochi, Kerala 682017
+                  {displayAddress}
                 </span>
               </li>
               <li className="flex gap-3">
                 <Mail className="w-4 h-4 text-brand-primary shrink-0" />
-                <a href="mailto:parklegalkochi@gmail.com" className="hover:text-brand-primary transition-colors">
-                  parklegalkochi@gmail.com
+                <a href={`mailto:${displayEmail}`} className="hover:text-brand-primary transition-colors break-all">
+                  {displayEmail}
                 </a>
               </li>
               <li className="flex gap-3">
                 <Phone className="w-4 h-4 text-brand-primary shrink-0" />
-                <a href="tel:+919995905111" className="hover:text-brand-primary transition-colors">
-                  +91 99959 05111
+                <a href={`tel:${displayPhone}`} className="hover:text-brand-primary transition-colors">
+                  {displayPhone}
                 </a>
               </li>
             </ul>

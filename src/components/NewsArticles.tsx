@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, ArrowRight, ArrowLeft } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Article {
   id: string;
@@ -20,7 +20,6 @@ export default function NewsArticles() {
   const [loading, setLoading] = useState(true);
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
   
   // Fetch more articles for the carousel
   const limit = 10;
@@ -39,14 +38,23 @@ export default function NewsArticles() {
       .finally(() => setLoading(false));
   }, []);
 
+  useEffect(() => {
+    if (selectedArticle) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [selectedArticle]);
+
   const handleArticleClick = (article: Article) => {
     setSelectedArticle(article);
-    document.body.style.overflow = 'hidden';
   };
 
   const closeModal = () => {
     setSelectedArticle(null);
-    document.body.style.overflow = 'unset';
   };
 
   const nextSlide = () => {

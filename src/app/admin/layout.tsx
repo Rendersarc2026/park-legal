@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LayoutDashboard, FileText, MessageSquare, Settings, LogOut, Menu, X } from 'lucide-react';
+import { LayoutDashboard, FileText, MessageSquare, Settings, LogOut, Menu, X, Phone } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -12,7 +12,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Close sidebar on route change
   useEffect(() => {
-    setIsSidebarOpen(false);
+    const handle = requestAnimationFrame(() => {
+      setIsSidebarOpen(false);
+    });
+    return () => cancelAnimationFrame(handle);
   }, [pathname]);
 
   if (pathname === '/admin/login') {
@@ -34,6 +37,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: 'News & Articles', href: '/admin/news', icon: FileText },
     { name: 'Testimonials', href: '/admin/testimonials', icon: MessageSquare },
     { name: 'About Page', href: '/admin/about', icon: Settings },
+    { name: 'Contact Details', href: '/admin/contact', icon: Phone },
   ];
 
   return (
@@ -108,8 +112,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </header>
 
         {/* Scrollable Content */}
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 lg:p-8">
-          <div className="max-w-6xl mx-auto">
+        <main className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 lg:p-8 flex flex-col">
+          <div className="max-w-6xl w-full mx-auto flex-grow flex flex-col">
             {children}
           </div>
         </main>

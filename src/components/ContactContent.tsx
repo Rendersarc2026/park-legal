@@ -1,8 +1,10 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, ExternalLink, User } from 'lucide-react';
 import Link from 'next/link';
+import AdminLoader from '@/components/AdminLoader';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -11,7 +13,48 @@ const fadeInUp = {
   transition: { duration: 0.8, ease: "easeOut" }
 } as const;
 
+interface DirectContact {
+  name: string;
+  phone: string;
+}
+
+interface ContactData {
+  phone: string;
+  email: string;
+  address: string;
+  directionsLink: string;
+  directContacts: DirectContact[];
+}
+
 export default function ContactContent() {
+  const [contactData, setContactData] = useState<ContactData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/admin/contact')
+      .then(res => res.json())
+      .then(data => {
+        if (data && !data.error) {
+          setContactData(data);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return <AdminLoader message="Loading contact information..." className="h-[calc(100vh-6rem)]" />;
+  }
+
+  if (!contactData) {
+    return (
+      <div className="flex-grow flex items-center justify-center py-24 px-6 text-gray-500 font-light text-center">
+        Contact details currently unavailable.
+      </div>
+    );
+  }
+
+
   return (
     <div className="flex-grow font-sans">
       {/* Hero Section */}
@@ -52,8 +95,8 @@ export default function ContactContent() {
                     <Phone className="w-6 h-6" />
                   </div>
                   <h3 className="text-sm uppercase tracking-widest text-[#666666] font-light mb-2">Call Us</h3>
-                  <a href="tel:+919995905111" className="text-2xl font-light text-[#333333] hover:text-brand-primary transition-colors">
-                    +91 99959 05111
+                  <a href={`tel:${contactData.phone}`} className="text-2xl font-light text-[#333333] hover:text-brand-primary transition-colors">
+                    {contactData.phone}
                   </a>
                   <p className="text-[#666666] mt-2 font-light">Office Reception</p>
                 </div>
@@ -64,8 +107,8 @@ export default function ContactContent() {
                     <Mail className="w-6 h-6" />
                   </div>
                   <h3 className="text-sm uppercase tracking-widest text-[#666666] font-light mb-2">Email Us</h3>
-                  <a href="mailto:parklegalkochi@gmail.com" className="text-xl font-light text-[#333333] hover:text-brand-primary transition-colors break-words">
-                    parklegalkochi@gmail.com
+                  <a href={`mailto:${contactData.email}`} className="text-xl font-light text-[#333333] hover:text-brand-primary transition-colors break-words">
+                    {contactData.email}
                   </a>
                   <p className="text-[#666666] mt-2 font-light">Direct Inquiry</p>
                 </div>
@@ -79,11 +122,10 @@ export default function ContactContent() {
                   </div>
                   <h3 className="text-sm uppercase tracking-widest text-[#666666] font-light mb-4">Visit Our Office</h3>
                   <p className="text-2xl font-light mb-6 leading-relaxed">
-                    1st Floor, Johns Corner Building, Judges Ave, GCDA LIG Colony,
-                    Ernakulam North, Kathrikadavu, Kaloor, Kochi, Kerala 682017
+                    {contactData.address}
                   </p>
                   <Link
-                    href="https://share.google/RA8iNjjGzmtfZquIz"
+                    href={contactData.directionsLink}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 text-brand-primary hover:text-[#333333] transition-colors font-light text-lg"
@@ -102,11 +144,8 @@ export default function ContactContent() {
             >
               <div className="bg-white p-8 rounded-[2rem] border border-gray-200 shadow-sm h-full">
                 <h3 className="text-2xl font-light text-[#333333] mb-8">Direct Contacts</h3>
-                <div className="space-y-6">
-                  {[
-                    { name: "Aravind", phone: "8714812848" },
-                    { name: "Manu", phone: "9400897108" }
-                  ].map((contact, i) => (
+                <div className="space-y-6 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                  {contactData.directContacts.map((contact, i) => (
                     <div key={i} className="p-6 bg-gray-50/50 rounded-2xl border border-gray-200 hover:border-brand-primary/20 transition-all group">
                       <div className="flex items-center gap-4 mb-3">
                         <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center text-brand-primary shadow-sm">

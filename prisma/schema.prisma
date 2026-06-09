@@ -59,3 +59,14 @@ model LoginAttempt {
   lockUntil DateTime?
   updatedAt DateTime @updatedAt
 }
+
+model ContactDetails {
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  phone          String
+  email          String
+  address        String
+  directionsLink String
+  directContacts Json     // Array of { name: String, phone: String }
+  isActive       Boolean  @default(true)
+}
+

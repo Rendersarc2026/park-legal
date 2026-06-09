@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Save, Plus, Trash2 } from 'lucide-react';
+import { Save, Plus, Trash2, Edit } from 'lucide-react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import AdminLoader from '@/components/AdminLoader';
 
 const noScript = (value: string | undefined) => {
   if (!value) return true;
@@ -35,6 +36,8 @@ type FormData = yup.InferType<typeof schema>;
 
 export default function AdminAbout() {
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [originalData, setOriginalData] = useState<FormData | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteConfig, setDeleteConfig] = useState<{ type: 'point' | 'stat', index: number } | null>(null);
 
@@ -62,12 +65,14 @@ export default function AdminAbout() {
       const res = await fetch('/api/admin/about');
       if (res.ok) {
         const data = await res.json();
-        reset({
+        const formatted = {
           description: data.description || '',
           stats: data.stats || [],
           // Map string array to object array for the form
           points: (data.points || []).map((p: { text: string }) => ({ text: p.text || p }))
-        });
+        };
+        reset(formatted);
+        setOriginalData(formatted);
       }
     } catch {
       toast.error('Failed to fetch data');
@@ -95,6 +100,7 @@ export default function AdminAbout() {
       });
       if (res.ok) {
         toast.success('About section updated successfully!');
+        setIsEditing(false);
         fetchAbout();
       } else {
         const errorData = await res.json();
@@ -121,7 +127,43 @@ export default function AdminAbout() {
     setDeleteConfig(null);
   };
 
-  if (loading) return <div className="p-8 text-center text-gray-500">Loading section data...</div>;
+  const renderActionButtons = () => (
+    <>
+      {!isEditing ? (
+        <button
+          type="button"
+          onClick={() => setIsEditing(true)}
+          className="flex items-center gap-2 bg-gray-900 text-white px-8 py-2.5 rounded-xl font-medium hover:bg-black transition-all shadow-lg shadow-gray-200 w-full sm:w-auto justify-center"
+        >
+          <Edit size={20} /> Edit
+        </button>
+      ) : (
+        <>
+          <button
+            type="button"
+            onClick={() => {
+              if (originalData) {
+                reset(originalData);
+              }
+              setIsEditing(false);
+            }}
+            className="flex items-center gap-2 bg-white text-gray-700 border border-gray-200 px-6 py-2.5 rounded-xl font-medium hover:bg-gray-50 transition-all w-full sm:w-auto justify-center"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleSubmit(onSubmit)}
+            disabled={isSubmitting}
+            className="flex items-center gap-2 bg-gray-900 text-white px-8 py-2.5 rounded-xl font-medium hover:bg-black transition-all disabled:opacity-50 shadow-lg shadow-gray-200 w-full sm:w-auto justify-center"
+          >
+            <Save size={20} /> {isSubmitting ? 'Saving...' : 'Save Changes'}
+          </button>
+        </>
+      )}
+    </>
+  );
+
+  if (loading) return <AdminLoader message="Loading about section settings..." className="flex-1" />;
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -130,13 +172,9 @@ export default function AdminAbout() {
           <h1 className="text-3xl font-light text-[#333333]">About Section</h1>
           <p className="text-gray-500 mt-1">Manage the &quot;Why Choose Park Legal?&quot; content on the homepage.</p>
         </div>
-        <button
-          onClick={handleSubmit(onSubmit)}
-          disabled={isSubmitting}
-          className="flex items-center gap-2 bg-gray-900 text-white px-8 py-2.5 rounded-xl font-medium hover:bg-black transition-all disabled:opacity-50 shadow-lg shadow-gray-200 w-full sm:w-auto justify-center"
-        >
-          <Save size={20} /> {isSubmitting ? 'Saving...' : 'Save Changes'}
-        </button>
+        <div className="hidden sm:flex gap-3 w-full sm:w-auto">
+          {renderActionButtons()}
+        </div>
       </div>
 
       <div className="space-y-8">
@@ -148,8 +186,9 @@ export default function AdminAbout() {
           </h2>
           <textarea
             {...register('description')}
+            disabled={!isEditing}
             rows={4}
-            className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-primary/20 transition-all ${errors.description ? 'border-red-500' : 'border-gray-200'}`}
+            className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.description ? 'border-red-500' : 'border-gray-200'}`}
             placeholder="Enter the main description text that explains why clients should choose your firm..."
           />
           {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
@@ -165,8 +204,8 @@ export default function AdminAbout() {
               </h2>
               <button 
                 type="button"
-                onClick={() => appendPoint({ text: '' })} 
-                className="flex items-center gap-1 text-sm bg-gray-50 text-brand-primary px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors font-medium shrink-0"
+                onClick={() => { if (!isEditing) setIsEditing(true); appendPoint({ text: '' }); }} 
+                className="flex items-center gap-1 text-sm bg-gray-50 text-brand-primary px-3 py-1.5 rounded-lg transition-colors font-medium shrink-0 hover:bg-gray-100"
               >
                 <Plus size={16} /> Add Point
               </button>
@@ -179,15 +218,17 @@ export default function AdminAbout() {
                     <div className="flex-1">
                       <input
                         {...register(`points.${i}.text` as const)}
+                        disabled={!isEditing}
                         type="text"
                         placeholder={`Point ${i + 1}`}
-                        className={`w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-brand-primary/20 transition-all ${errors.points?.[i]?.text ? 'border-red-500' : 'border-gray-200'}`}
+                        className={`w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.points?.[i]?.text ? 'border-red-500' : 'border-gray-200'}`}
                       />
                     </div>
                     <button 
                       type="button"
                       onClick={() => handleDeleteClick('point', i)} 
-                      className="p-2.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all shrink-0"
+                      disabled={!isEditing}
+                      className="p-2.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all shrink-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
                     >
                       <Trash2 size={20} />
                     </button>
@@ -212,8 +253,8 @@ export default function AdminAbout() {
               </h2>
               <button 
                 type="button"
-                onClick={() => appendStat({ label: '', value: '' })} 
-                className="flex items-center gap-1 text-sm bg-gray-50 text-brand-primary px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors font-medium shrink-0"
+                onClick={() => { if (!isEditing) setIsEditing(true); appendStat({ label: '', value: '' }); }} 
+                className="flex items-center gap-1 text-sm bg-gray-50 text-brand-primary px-3 py-1.5 rounded-lg transition-colors font-medium shrink-0 hover:bg-gray-100"
               >
                 <Plus size={16} /> Add Stat
               </button>
@@ -226,23 +267,26 @@ export default function AdminAbout() {
                     <div className="w-20 sm:w-24 shrink-0">
                       <input
                         {...register(`stats.${i}.value` as const)}
+                        disabled={!isEditing}
                         type="text"
                         placeholder="Value"
-                        className={`w-full px-2 sm:px-3 py-2.5 border rounded-xl text-center focus:ring-2 focus:ring-brand-primary/20 transition-all ${errors.stats?.[i]?.value ? 'border-red-500' : 'border-gray-200'}`}
+                        className={`w-full px-2 sm:px-3 py-2.5 border rounded-xl text-center focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.stats?.[i]?.value ? 'border-red-500' : 'border-gray-200'}`}
                       />
                     </div>
                     <div className="flex-1">
                       <input
                         {...register(`stats.${i}.label` as const)}
+                        disabled={!isEditing}
                         type="text"
                         placeholder="Label"
-                        className={`w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-brand-primary/20 transition-all ${errors.stats?.[i]?.label ? 'border-red-500' : 'border-gray-200'}`}
+                        className={`w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.stats?.[i]?.label ? 'border-red-500' : 'border-gray-200'}`}
                       />
                     </div>
                     <button 
                       type="button"
                       onClick={() => handleDeleteClick('stat', i)} 
-                      className="p-2.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all shrink-0"
+                      disabled={!isEditing}
+                      className="p-2.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all shrink-0 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent"
                     >
                       <Trash2 size={20} />
                     </button>
@@ -265,6 +309,12 @@ export default function AdminAbout() {
         </div>
       </div>
 
+
+      {/* Mobile Sticky Action Bar */}
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 z-30 flex gap-3 shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+        {renderActionButtons()}
+      </div>
+      <div className="h-20 sm:hidden"></div>
 
       <ConfirmationModal
         isOpen={isDeleteModalOpen}

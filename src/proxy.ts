@@ -27,7 +27,7 @@ export async function proxy(request: NextRequest) {
       const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'supersecretjwtsecret1234567890');
       await jwtVerify(token, secret);
       return NextResponse.redirect(new URL('/admin', request.url));
-    } catch (err) {
+    } catch {
       // Token invalid, allow login page
     }
   }

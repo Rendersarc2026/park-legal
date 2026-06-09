@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
 import { Plus, Edit2, Trash2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import toast from 'react-hot-toast';
 import ConfirmationModal from '@/components/ConfirmationModal';
+import AdminLoader from '@/components/AdminLoader';
 
 const noScript = (value: string | undefined) => {
   if (!value) return true;
@@ -238,7 +240,7 @@ export default function AdminNews() {
 
       <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-220px)] min-h-[460px]">
         {loading ? (
-          <div className="p-8 text-center text-gray-500 flex-1 flex items-center justify-center">Loading...</div>
+          <AdminLoader message="Loading news articles..." className="flex-grow" />
         ) : (
           <div className="overflow-auto flex-1">
             <table className="w-full text-left min-w-[600px]">
@@ -349,10 +351,11 @@ export default function AdminNews() {
                 <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
                 {imageUrl && (
                   <div className="relative aspect-[16/9] w-full mb-4 rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
-                    <img 
+                    <Image 
                       src={imageUrl} 
                       alt="Preview" 
-                      className="w-full h-full object-contain"
+                      fill
+                      className="object-contain"
                     />
                   </div>
                 )}
