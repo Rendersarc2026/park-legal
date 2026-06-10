@@ -253,7 +253,7 @@ export default function AdminTestimonials() {
                 <textarea
                   {...register('quote')}
                   rows={4}
-                  className={`w-full px-4 py-2 border rounded-xl ${errors.quote ? 'border-red-500' : ''}`}
+                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${errors.quote ? 'border-red-500' : 'border-gray-200'}`}
                 />
                 {errors.quote && <p className="text-red-500 text-xs mt-1">{errors.quote.message}</p>}
               </div>
@@ -263,7 +263,7 @@ export default function AdminTestimonials() {
                   <input
                     {...register('author')}
                     type="text"
-                    className="w-full px-4 py-2 border rounded-xl"
+                    className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all"
                   />
                 </div>
                 <div>
@@ -273,7 +273,7 @@ export default function AdminTestimonials() {
                     type="number"
                     min="1"
                     max="5"
-                    className={`w-full px-4 py-2 border rounded-xl ${errors.stars ? 'border-red-500' : ''}`}
+                    className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${errors.stars ? 'border-red-500' : 'border-gray-200'}`}
                   />
                   {errors.stars && <p className="text-red-500 text-xs mt-1">{errors.stars.message}</p>}
                 </div>

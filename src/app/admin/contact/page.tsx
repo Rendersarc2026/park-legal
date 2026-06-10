@@ -228,7 +228,7 @@ export default function AdminContact() {
                   register('phone').onChange(e);
                 }}
                 type="text"
-                className={`w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.phone ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.phone ? 'border-red-500' : 'border-gray-200'}`}
                 placeholder="+91 99959 05111"
               />
               {errors.phone && <p className="text-red-500 text-xs">{errors.phone.message}</p>}
@@ -244,7 +244,7 @@ export default function AdminContact() {
                 {...register('email')}
                 disabled={!isEditing}
                 type="email"
-                className={`w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.email ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.email ? 'border-red-500' : 'border-gray-200'}`}
                 placeholder="parklegalkochi@gmail.com"
               />
               {errors.email && <p className="text-red-500 text-xs">{errors.email.message}</p>}
@@ -260,7 +260,7 @@ export default function AdminContact() {
                 {...register('directionsLink')}
                 disabled={!isEditing}
                 type="text"
-                className={`w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.directionsLink ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.directionsLink ? 'border-red-500' : 'border-gray-200'}`}
                 placeholder="https://share.google/..."
               />
               {errors.directionsLink && <p className="text-red-500 text-xs">{errors.directionsLink.message}</p>}
@@ -282,7 +282,7 @@ export default function AdminContact() {
                 {...register('address')}
                 disabled={!isEditing}
                 rows={4}
-                className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.address ? 'border-red-500' : 'border-gray-200'}`}
+                className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.address ? 'border-red-500' : 'border-gray-200'}`}
                 placeholder="Enter detailed office address..."
               />
               {errors.address && <p className="text-red-500 text-xs">{errors.address.message}</p>}
@@ -321,7 +321,7 @@ export default function AdminContact() {
                         disabled={!isEditing}
                         type="text"
                         placeholder="Name"
-                        className={`w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.directContacts?.[i]?.name ? 'border-red-500' : 'border-gray-200'}`}
+                        className={`w-full px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.directContacts?.[i]?.name ? 'border-red-500' : 'border-gray-200'}`}
                       />
                     </div>
                     {/* Contact Phone */}
@@ -339,7 +339,7 @@ export default function AdminContact() {
                         }}
                         type="text"
                         placeholder="Phone"
-                        className={`w-full px-3 py-2 border rounded-xl text-sm focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.directContacts?.[i]?.phone ? 'border-red-500' : 'border-gray-200'}`}
+                        className={`w-full px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.directContacts?.[i]?.phone ? 'border-red-500' : 'border-gray-200'}`}
                       />
                     </div>
                   </div>

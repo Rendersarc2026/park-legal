@@ -188,7 +188,7 @@ export default function AdminAbout() {
             {...register('description')}
             disabled={!isEditing}
             rows={4}
-            className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.description ? 'border-red-500' : 'border-gray-200'}`}
+            className={`w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.description ? 'border-red-500' : 'border-gray-200'}`}
             placeholder="Enter the main description text that explains why clients should choose your firm..."
           />
           {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description.message}</p>}
@@ -221,7 +221,7 @@ export default function AdminAbout() {
                         disabled={!isEditing}
                         type="text"
                         placeholder={`Point ${i + 1}`}
-                        className={`w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.points?.[i]?.text ? 'border-red-500' : 'border-gray-200'}`}
+                        className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.points?.[i]?.text ? 'border-red-500' : 'border-gray-200'}`}
                       />
                     </div>
                     <button 
@@ -270,7 +270,7 @@ export default function AdminAbout() {
                         disabled={!isEditing}
                         type="text"
                         placeholder="Value"
-                        className={`w-full px-2 sm:px-3 py-2.5 border rounded-xl text-center focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.stats?.[i]?.value ? 'border-red-500' : 'border-gray-200'}`}
+                        className={`w-full px-2 sm:px-3 py-2.5 border rounded-xl text-center focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.stats?.[i]?.value ? 'border-red-500' : 'border-gray-200'}`}
                       />
                     </div>
                     <div className="flex-1">
@@ -279,7 +279,7 @@ export default function AdminAbout() {
                         disabled={!isEditing}
                         type="text"
                         placeholder="Label"
-                        className={`w-full px-4 py-2.5 border rounded-xl focus:ring-2 focus:ring-brand-primary/20 transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.stats?.[i]?.label ? 'border-red-500' : 'border-gray-200'}`}
+                        className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.stats?.[i]?.label ? 'border-red-500' : 'border-gray-200'}`}
                       />
                     </div>
                     <button 

@@ -323,7 +323,7 @@ export default function AdminNews() {
                 <input 
                   {...register('title')}
                   type="text" 
-                  className={`w-full px-4 py-2 border rounded-xl ${errors.title ? 'border-red-500' : ''}`} 
+                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${errors.title ? 'border-red-500' : 'border-gray-200'}`} 
                 />
                 {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title.message}</p>}
               </div>
@@ -333,7 +333,7 @@ export default function AdminNews() {
                   <input 
                     {...register('date')}
                     type="date" 
-                    className={`w-full px-4 py-2 border rounded-xl ${errors.date ? 'border-red-500' : ''}`} 
+                    className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${errors.date ? 'border-red-500' : 'border-gray-200'}`} 
                   />
                   {errors.date && <p className="text-red-500 text-xs mt-1">{errors.date.message}</p>}
                 </div>
@@ -342,7 +342,7 @@ export default function AdminNews() {
                   <input 
                     {...register('category')}
                     type="text" 
-                    className={`w-full px-4 py-2 border rounded-xl ${errors.category ? 'border-red-500' : ''}`} 
+                    className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${errors.category ? 'border-red-500' : 'border-gray-200'}`} 
                   />
                   {errors.category && <p className="text-red-500 text-xs mt-1">{errors.category.message}</p>}
                 </div>
@@ -364,7 +364,7 @@ export default function AdminNews() {
                     {...register('imageUrl')}
                     type="text" 
                     readOnly
-                    className={`flex-1 px-4 py-2 border rounded-xl bg-gray-50 cursor-not-allowed ${errors.imageUrl ? 'border-red-500' : ''}`} 
+                    className={`flex-1 px-4 py-2 border rounded-xl bg-gray-50 cursor-not-allowed focus:outline-none ${errors.imageUrl ? 'border-red-500' : 'border-gray-200'}`} 
                     placeholder="Click 'Upload File' to select an image" 
                   />
                   <label className="cursor-pointer bg-gray-50 px-4 py-2 border border-dashed border-gray-300 rounded-xl hover:bg-gray-100 transition-colors whitespace-nowrap">
@@ -379,7 +379,7 @@ export default function AdminNews() {
                 <textarea 
                   {...register('excerpt')}
                   rows={2} 
-                  className={`w-full px-4 py-2 border rounded-xl ${errors.excerpt ? 'border-red-500' : ''}`} 
+                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${errors.excerpt ? 'border-red-500' : 'border-gray-200'}`} 
                 />
                 {errors.excerpt && <p className="text-red-500 text-xs mt-1">{errors.excerpt.message}</p>}
               </div>
@@ -388,7 +388,7 @@ export default function AdminNews() {
                 <textarea 
                   {...register('content')}
                   rows={8} 
-                  className={`w-full px-4 py-2 border rounded-xl ${errors.content ? 'border-red-500' : ''}`} 
+                  className={`w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${errors.content ? 'border-red-500' : 'border-gray-200'}`} 
                   placeholder="Paste the full article content here..."
                 />
                 {errors.content && <p className="text-red-500 text-xs mt-1">{errors.content.message}</p>}

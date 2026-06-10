@@ -123,7 +123,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
                 {...register('currentPassword')}
                 type={showCurrentPassword ? 'text' : 'password'}
                 placeholder="Enter current password"
-                className={`w-full px-4 py-2.5 pr-11 border rounded-xl text-sm focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${
+                className={`w-full px-4 py-2.5 pr-11 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${
                   errors.currentPassword ? 'border-red-400' : 'border-gray-200'
                 }`}
               />
@@ -151,7 +151,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
                 {...register('newPassword')}
                 type={showNewPassword ? 'text' : 'password'}
                 placeholder="Enter new password"
-                className={`w-full px-4 py-2.5 pr-11 border rounded-xl text-sm focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${
+                className={`w-full px-4 py-2.5 pr-11 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${
                   errors.newPassword ? 'border-red-400' : 'border-gray-200'
                 }`}
               />
@@ -180,7 +180,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
                 {...register('confirmPassword')}
                 type={showConfirmPassword ? 'text' : 'password'}
                 placeholder="Confirm new password"
-                className={`w-full px-4 py-2.5 pr-11 border rounded-xl text-sm focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${
+                className={`w-full px-4 py-2.5 pr-11 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all ${
                   errors.confirmPassword ? 'border-red-400' : 'border-gray-200'
                 }`}
               />
