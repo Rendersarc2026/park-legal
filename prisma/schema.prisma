@@ -70,3 +70,13 @@ model ContactDetails {
   isActive       Boolean  @default(true)
 }
 
+model Specialization {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  icon        String
+  label       String
+  description String
+  details     String[]
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+

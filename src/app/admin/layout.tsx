@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { LayoutDashboard, FileText, MessageSquare, Settings, LogOut, Menu, X, Phone, KeyRound } from 'lucide-react';
+import { LayoutDashboard, FileText, MessageSquare, Settings, LogOut, Menu, X, Phone, KeyRound, Briefcase } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import ChangePasswordModal from '@/components/ChangePasswordModal';
 
@@ -38,6 +38,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'News & Articles', href: '/admin/news', icon: FileText },
     { name: 'Testimonials', href: '/admin/testimonials', icon: MessageSquare },
+    { name: 'Specializations', href: '/admin/specializations', icon: Briefcase },
     { name: 'About Page', href: '/admin/about', icon: Settings },
     { name: 'Contact Details', href: '/admin/contact', icon: Phone },
   ];
