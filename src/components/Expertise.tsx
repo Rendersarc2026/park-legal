@@ -165,7 +165,7 @@ export default function Expertise() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ type: 'spring', damping: 25, stiffness: 280 }}
+              transition={{ type: 'spring', damping: 24, stiffness: 180 }}
               className="bg-white/95 border border-gray-100/50 backdrop-blur-xl shadow-2xl rounded-3xl p-8 md:p-12 max-w-3xl w-full max-h-[85vh] overflow-y-auto relative z-10 flex flex-col justify-between scrollbar-none"
             >
               {/* Close Button */}

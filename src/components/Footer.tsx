@@ -30,8 +30,8 @@ export default async function Footer() {
               <Image
                 src="/assets/logo.png"
                 alt="Park Legal Logo"
-                width={350}
-                height={180}
+                width={4588}
+                height={5514}
                 className="h-14 w-auto grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all"
               />
             </Link>

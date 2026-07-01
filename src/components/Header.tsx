@@ -42,16 +42,16 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-4 md:py-5 flex justify-between items-center transition-all duration-500 font-sans ${isMenuOpen ? 'bg-white' : isScrolled ? 'bg-white/80 backdrop-blur-md shadow-md' : 'bg-white shadow-sm'}`}
+        className={`fixed top-0 left-0 w-full z-50 px-6 md:px-12 py-4 md:py-5 flex justify-between items-center transition-[background-color,backdrop-filter,box-shadow] duration-300 font-sans ${isMenuOpen ? 'bg-white' : isScrolled ? 'bg-white/20 backdrop-blur-md border-b border-gray-200/20 shadow-none' : 'bg-white shadow-sm'}`}
       >
         <Link href="/" className="z-50 relative group">
           <div className="relative">
             <Image
               src="/assets/logo.png"
               alt="Park Legal Logo"
-              width={360}
-              height={120}
-              className="h-10 md:h-12 w-auto object-contain"
+              width={4588}
+              height={5514}
+              className="h-10 md:h-12 w-auto object-contain transition-none"
               priority
             />
           </div>

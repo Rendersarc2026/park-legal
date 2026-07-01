@@ -107,7 +107,7 @@ export default function NewsArticles() {
             <motion.div 
               className="flex gap-8"
               animate={{ x: `calc(-${currentIndex * (100 / 3.1)}%)` }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              transition={{ type: "spring", stiffness: 150, damping: 22 }}
             >
               {articles.map((article, index) => (
                 <motion.article 
@@ -195,6 +195,7 @@ export default function NewsArticles() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: 'spring', damping: 24, stiffness: 180 }}
               className="relative bg-white w-full max-w-4xl max-h-[90vh] rounded-[2.5rem] overflow-hidden shadow-2xl flex flex-col"
               onClick={(e) => e.stopPropagation()}
             >

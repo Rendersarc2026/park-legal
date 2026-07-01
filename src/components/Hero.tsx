@@ -36,8 +36,8 @@ export default function Hero() {
           <Image
             src="/assets/logo.png"
             alt="Park Legal Logo"
-            width={700}
-            height={120}
+            width={4588}
+            height={5514}
             className="w-[110px] md:w-[150px] h-auto drop-shadow-2xl"
           />
         </motion.div>

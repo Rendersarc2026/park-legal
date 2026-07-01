@@ -106,10 +106,7 @@ export default function AboutContent() {
 
             {/* Our History Card */}
             <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1 }}
+              {...fadeInUp}
               className="bg-white p-10 md:p-14 rounded-[3rem] border border-gray-200 shadow-sm flex flex-col relative overflow-hidden group hover:border-brand-primary/30"
             >
               <div className="absolute -top-12 -left-12 w-24 h-24 bg-brand-primary/5 rounded-full blur-3xl group-hover:bg-brand-primary/10 transition-colors"></div>

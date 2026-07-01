@@ -29,10 +29,19 @@
   --color-text-muted: var(--color-text-muted);
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+  scrollbar-gutter: stable;
+}
+
 body {
   background-color: #ffffff;
   color: var(--color-foreground);
   font-family: var(--font-sans);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -63,6 +72,27 @@ h1,h2,h3,h4,h5,h6 {
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #8fa3a3;
+}
+
+/* Lenis smooth scrolling compatibility */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 

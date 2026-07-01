@@ -3,16 +3,40 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Lock } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+
+const schema = yup.object().shape({
+  username: yup
+    .string()
+    .required('Username is required')
+    .trim(),
+  password: yup
+    .string()
+    .required('Password is required'),
+});
+
+type LoginFormData = yup.InferType<typeof schema>;
 
 export default function AdminLogin() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormData>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      username: '',
+      password: '',
+    },
+  });
+
+  const onSubmit = async (data: LoginFormData) => {
     setLoading(true);
     setError('');
 
@@ -20,15 +44,15 @@ export default function AdminLogin() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify(data),
       });
 
       if (res.ok) {
         router.push('/admin');
         router.refresh();
       } else {
-        const data = await res.json();
-        setError(data.error || 'Login failed');
+        const resData = await res.json();
+        setError(resData.error || 'Login failed');
       }
     } catch {
       setError('An error occurred. Please try again.');
@@ -53,32 +77,32 @@ export default function AdminLogin() {
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-gray-700">Username</label>
             <input
+              {...register('username')}
               type="text"
-              value={username}
-              onChange={(e) => {
-                setUsername(e.target.value);
-                if (error) setError('');
-              }}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all"
-              required
+              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all ${
+                errors.username ? 'border-red-400' : 'border-gray-200'
+              }`}
             />
+            {errors.username && (
+              <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>
+            )}
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+          <div className="space-y-1.5">
+            <label className="block text-sm font-medium text-gray-700">Password</label>
             <input
+              {...register('password')}
               type="password"
-              value={password}
-              onChange={(e) => {
-                setPassword(e.target.value);
-                if (error) setError('');
-              }}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all"
-              required
+              className={`w-full px-4 py-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-all ${
+                errors.password ? 'border-red-400' : 'border-gray-200'
+              }`}
             />
+            {errors.password && (
+              <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+            )}
           </div>
           <button
             type="submit"

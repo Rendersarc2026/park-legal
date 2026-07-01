@@ -38,7 +38,7 @@ export default function Testimonials() {
     if (testimonials.length <= 1) return;
     const timer = setInterval(() => {
       paginate(1);
-    }, 8000);
+    }, 10000);
     return () => clearInterval(timer);
   }, [testimonials.length, paginate]);
 
@@ -93,7 +93,7 @@ export default function Testimonials() {
               animate="center"
               exit="exit"
               transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
+                x: { type: "spring", stiffness: 150, damping: 22 },
                 opacity: { duration: 0.5 },
                 scale: { duration: 0.5 }
               }}
