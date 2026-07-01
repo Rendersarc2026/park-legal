@@ -5,12 +5,14 @@ import Link from 'next/link';
 import { LayoutDashboard, FileText, MessageSquare, Settings, LogOut, Menu, X, Phone, KeyRound, Briefcase } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import ChangePasswordModal from '@/components/ChangePasswordModal';
+import ConfirmationModal from '@/components/ConfirmationModal';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+  const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
 
   // Close sidebar on route change
   useEffect(() => {
@@ -96,7 +98,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <KeyRound size={20} />
             <span className="font-medium">Change Password</span>
           </button>
-          <button onClick={handleLogout} className="flex items-center space-x-3 px-4 py-3 rounded-xl w-full text-red-600 hover:bg-red-50 transition-colors">
+          <button onClick={() => setIsLogoutConfirmOpen(true)} className="flex items-center space-x-3 px-4 py-3 rounded-xl w-full text-red-600 hover:bg-red-50 transition-colors">
             <LogOut size={20} />
             <span className="font-medium">Logout</span>
           </button>
@@ -130,7 +132,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         isOpen={isChangePasswordOpen}
         onClose={() => setIsChangePasswordOpen(false)}
       />
+
+      <ConfirmationModal
+        isOpen={isLogoutConfirmOpen}
+        onClose={() => setIsLogoutConfirmOpen(false)}
+        onConfirm={handleLogout}
+        title="Confirm Logout"
+        message="Are you sure you want to log out of the admin panel?"
+        confirmText="Logout"
+        isDanger={true}
+      />
     </div>
   );
 }
-
