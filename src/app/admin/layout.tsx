@@ -44,7 +44,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   ];
 
   return (
-    <div className="flex h-screen bg-gray-50 font-sans text-gray-900 overflow-hidden">
+    <div className="admin-dark flex h-screen bg-gray-50 font-sans text-gray-900 overflow-hidden">
       {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div 

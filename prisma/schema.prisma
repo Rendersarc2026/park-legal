@@ -80,3 +80,5 @@ model Specialization {
   createdAt   DateTime @default(now())
 }
 
+
+
