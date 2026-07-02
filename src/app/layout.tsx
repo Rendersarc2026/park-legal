@@ -16,7 +16,7 @@ const playfair = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "Park Legal | Professional Legal Services in Kochi",
+    default: "Park Legal",
     template: "%s | Park Legal"
   },
   description: "Park Legal is a premier law firm in Kochi, providing expert legal counsel and representation with integrity and precision. Specializing in corporate, litigation, and personal legal services.",
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "Park Legal | Professional Legal Services in Kochi",
+    title: "Park Legal",
     description: "Expert legal counsel and representation with integrity and precision. Specializing in corporate, litigation, and personal legal services.",
     url: "https://parklegal.in",
     siteName: "Park Legal",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Park Legal | Professional Legal Services in Kochi",
+    title: "Park Legal",
     description: "Expert legal counsel and representation with integrity and precision.",
   },
   robots: {

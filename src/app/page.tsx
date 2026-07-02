@@ -7,7 +7,6 @@ import Testimonials from "@/components/Testimonials";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Home | Professional Legal Services in Kochi",
   description: "Park Legal is a dedicated law firm in Kochi providing expert legal representation in litigation, corporate law, and personal legal matters.",
 };
 
