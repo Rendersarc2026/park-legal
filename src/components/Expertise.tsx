@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import * as LucideIcons from 'lucide-react';
 
@@ -41,6 +41,48 @@ const itemVariants: Variants = {
 export default function Expertise() {
   const [specializations, setSpecializations] = useState<Specialization[]>([]);
   const [selectedSpecialization, setSelectedSpecialization] = useState<Specialization | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [scrollProgress, setScrollProgress] = useState({ thumbWidth: 0, thumbOffset: 0 });
+
+  const checkScroll = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setCanScrollLeft(scrollLeft > 2);
+      setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 2);
+      
+      if (scrollWidth > 0) {
+        const thumbWidth = (clientWidth / scrollWidth) * 100;
+        const thumbOffset = (scrollLeft / scrollWidth) * 100;
+        setScrollProgress({ thumbWidth, thumbOffset });
+      }
+    }
+  };
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) {
+      el.addEventListener('scroll', checkScroll);
+      const timer = setTimeout(() => {
+        checkScroll();
+      }, 100);
+      window.addEventListener('resize', checkScroll);
+      return () => {
+        el.removeEventListener('scroll', checkScroll);
+        window.removeEventListener('resize', checkScroll);
+        clearTimeout(timer);
+      };
+    }
+  }, [specializations]);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollRef.current) {
+      const { clientWidth } = scrollRef.current;
+      const scrollAmount = direction === 'left' ? -clientWidth * 0.75 : clientWidth * 0.75;
+      scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     fetch('/api/admin/specializations')
@@ -101,49 +143,127 @@ export default function Expertise() {
               <span className="font-normal text-brand-primary">Tailored to Your Specific Needs</span>
             </h2>
           </div>
-          <p className="text-text-muted font-light max-w-md mt-6 md:mt-0 text-base leading-relaxed">
-            We offer expert, strategically structured representation across multiple litigation and advisory domains, protecting your interests at every step.
-          </p>
+          <div className="flex flex-col gap-6 md:items-end max-w-md w-full">
+            <p className="text-text-muted font-light mt-6 md:mt-0 text-base leading-relaxed text-center md:text-right w-full">
+              We offer expert, strategically structured representation across multiple litigation and advisory domains, protecting your interests at every step.
+            </p>
+            {specializations.length > 0 && (
+              <div className="hidden md:flex items-center gap-3">
+                <button
+                  onClick={() => scroll('left')}
+                  disabled={!canScrollLeft}
+                  className={`p-3 rounded-full border transition-all duration-300 ${
+                    canScrollLeft
+                      ? 'border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white cursor-pointer'
+                      : 'border-gray-200 text-gray-300 cursor-not-allowed'
+                  }`}
+                  aria-label="Scroll left"
+                >
+                  <LucideIcons.ChevronLeft size={20} />
+                </button>
+                <button
+                  onClick={() => scroll('right')}
+                  disabled={!canScrollRight}
+                  className={`p-3 rounded-full border transition-all duration-300 ${
+                    canScrollRight
+                      ? 'border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white cursor-pointer'
+                      : 'border-gray-200 text-gray-300 cursor-not-allowed'
+                  }`}
+                  aria-label="Scroll right"
+                >
+                  <LucideIcons.ChevronRight size={20} />
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {specializations.length > 0 && (
-          <motion.div
-            variants={containerVariants}
-            initial="initial"
-            whileInView="whileInView"
-            viewport={{ once: true, margin: "-100px" }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {specializations.map((spec, index) => (
-              <motion.div
-                key={spec.id || index}
-                variants={itemVariants}
-                onClick={() => setSelectedSpecialization(spec)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    setSelectedSpecialization(spec);
-                  }
-                }}
-                className="group bg-white p-8 rounded-3xl border border-gray-100 hover:border-brand-primary/30 shadow-sm hover:shadow-xl hover:shadow-brand-primary/5 transition-all duration-500 flex flex-col justify-between cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
-              >
-                <div>
-                  <h3 className="text-xl font-normal text-text-main mb-4 group-hover:text-brand-primary transition-colors duration-300">
-                    {spec.label}
-                  </h3>
-                  <p className="text-text-muted font-light leading-relaxed text-sm line-clamp-3">
-                    {spec.description}
-                  </p>
-                </div>
+          <div className="relative">
+            <motion.div
+              ref={scrollRef}
+              data-lenis-prevent
+              variants={containerVariants}
+              initial="initial"
+              whileInView="whileInView"
+              viewport={{ once: true, margin: "-100px" }}
+              className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-none pb-8 snap-x snap-mandatory px-6 -mx-6 md:px-0 md:mx-0"
+            >
+              {specializations.map((spec, index) => (
+                <motion.div
+                  key={spec.id || index}
+                  variants={itemVariants}
+                  onClick={() => setSelectedSpecialization(spec)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      setSelectedSpecialization(spec);
+                    }
+                  }}
+                  className="group bg-white p-8 rounded-3xl border border-gray-100 hover:border-brand-primary/30 shadow-sm hover:shadow-xl hover:shadow-brand-primary/5 transition-all duration-500 flex flex-col justify-between cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand-primary snap-start shrink-0 w-[290px] sm:w-[350px] md:w-[380px] min-h-[300px]"
+                >
+                  <div className="flex-grow flex flex-col justify-between">
+                    <div>
+                      <h3 className="text-xl font-normal text-text-main mb-4 group-hover:text-brand-primary transition-colors duration-300">
+                        {spec.label}
+                      </h3>
+                      <p className="text-text-muted font-light leading-relaxed text-sm line-clamp-4">
+                        {spec.description}
+                      </p>
+                    </div>
 
-                <div className="mt-8 pt-6 border-t border-gray-50 flex items-center gap-2 text-brand-primary font-medium text-sm transition-all duration-300">
-                  <span className="group-hover:translate-x-1 transition-transform duration-300">Read Full Details</span>
-                  <LucideIcons.ArrowUpRight size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
+                    <div className="mt-8 pt-6 border-t border-gray-50 flex items-center gap-2 text-brand-primary font-medium text-sm transition-all duration-300">
+                      <span className="group-hover:translate-x-1 transition-transform duration-300">Read Full Details</span>
+                      <LucideIcons.ArrowUpRight size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Scroll Progress Bar & Controls */}
+            <div className="flex justify-between items-center mt-6">
+              {/* Progress bar */}
+              <div className="w-48 bg-gray-100 h-[3px] rounded-full relative">
+                <div 
+                  className="bg-brand-primary h-full rounded-full absolute top-0 transition-all duration-150 ease-out"
+                  style={{
+                    width: `${scrollProgress.thumbWidth || 20}%`,
+                    left: `${scrollProgress.thumbOffset || 0}%`
+                  }}
+                />
+              </div>
+              
+              {/* Mobile/Tablet Arrow Navigation */}
+              <div className="flex md:hidden items-center gap-3">
+                <button
+                  onClick={() => scroll('left')}
+                  disabled={!canScrollLeft}
+                  className={`p-2.5 rounded-full border transition-all duration-300 ${
+                    canScrollLeft
+                      ? 'border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white cursor-pointer'
+                      : 'border-gray-200 text-gray-300 cursor-not-allowed'
+                  }`}
+                  aria-label="Scroll left"
+                >
+                  <LucideIcons.ChevronLeft size={16} />
+                </button>
+                <button
+                  onClick={() => scroll('right')}
+                  disabled={!canScrollRight}
+                  className={`p-2.5 rounded-full border transition-all duration-300 ${
+                    canScrollRight
+                      ? 'border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white cursor-pointer'
+                      : 'border-gray-200 text-gray-300 cursor-not-allowed'
+                  }`}
+                  aria-label="Scroll right"
+                >
+                  <LucideIcons.ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
 
