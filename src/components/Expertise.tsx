@@ -143,39 +143,9 @@ export default function Expertise() {
               <span className="font-normal text-brand-primary">Tailored to Your Specific Needs</span>
             </h2>
           </div>
-          <div className="flex flex-col gap-6 md:items-end max-w-md w-full">
-            <p className="text-text-muted font-light mt-6 md:mt-0 text-base leading-relaxed text-center md:text-right w-full">
-              We offer expert, strategically structured representation across multiple litigation and advisory domains, protecting your interests at every step.
-            </p>
-            {specializations.length > 0 && (
-              <div className="hidden md:flex items-center gap-3">
-                <button
-                  onClick={() => scroll('left')}
-                  disabled={!canScrollLeft}
-                  className={`p-3 rounded-full border transition-all duration-300 ${
-                    canScrollLeft
-                      ? 'border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white cursor-pointer'
-                      : 'border-gray-200 text-gray-300 cursor-not-allowed'
-                  }`}
-                  aria-label="Scroll left"
-                >
-                  <LucideIcons.ChevronLeft size={20} />
-                </button>
-                <button
-                  onClick={() => scroll('right')}
-                  disabled={!canScrollRight}
-                  className={`p-3 rounded-full border transition-all duration-300 ${
-                    canScrollRight
-                      ? 'border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white cursor-pointer'
-                      : 'border-gray-200 text-gray-300 cursor-not-allowed'
-                  }`}
-                  aria-label="Scroll right"
-                >
-                  <LucideIcons.ChevronRight size={20} />
-                </button>
-              </div>
-            )}
-          </div>
+          <p className="text-text-muted font-light max-w-md mt-6 md:mt-0 text-base leading-relaxed">
+            We offer expert, strategically structured representation across multiple litigation and advisory domains, protecting your interests at every step.
+          </p>
         </div>
 
         {specializations.length > 0 && (
@@ -187,7 +157,7 @@ export default function Expertise() {
               initial="initial"
               whileInView="whileInView"
               viewport={{ once: true, margin: "-100px" }}
-              className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-none pb-8 snap-x snap-mandatory px-6 -mx-6 md:px-0 md:mx-0"
+              className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-none pb-8 snap-x snap-mandatory px-6 -mx-6 scroll-px-6 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 md:overflow-visible md:px-0 md:mx-0 md:pb-0 md:snap-none"
             >
               {specializations.map((spec, index) => (
                 <motion.div
@@ -201,7 +171,7 @@ export default function Expertise() {
                       setSelectedSpecialization(spec);
                     }
                   }}
-                  className="group bg-white p-8 rounded-3xl border border-gray-100 hover:border-brand-primary/30 shadow-sm hover:shadow-xl hover:shadow-brand-primary/5 transition-all duration-500 flex flex-col justify-between cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand-primary snap-start shrink-0 w-[290px] sm:w-[350px] md:w-[380px] min-h-[300px]"
+                  className="group bg-white p-8 rounded-3xl border border-gray-100 hover:border-brand-primary/30 shadow-sm hover:shadow-xl hover:shadow-brand-primary/5 transition-all duration-500 flex flex-col justify-between cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand-primary snap-start shrink-0 w-[290px] sm:w-[350px] md:w-full md:shrink md:snap-none min-h-[300px]"
                 >
                   <div className="flex-grow flex flex-col justify-between">
                     <div>
@@ -223,7 +193,7 @@ export default function Expertise() {
             </motion.div>
 
             {/* Scroll Progress Bar & Controls */}
-            <div className="flex justify-between items-center mt-6">
+            <div className="flex justify-between items-center mt-6 md:hidden">
               {/* Progress bar */}
               <div className="w-48 bg-gray-100 h-[3px] rounded-full relative">
                 <div 
