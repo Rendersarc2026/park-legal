@@ -6,16 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload"
+    "lint": "eslint"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
-    "@opennextjs/cloudflare": "^1.20.1",
     "@prisma/client": "^6.19.3",
-    "@prisma/extension-accelerate": "^3.0.1",
     "bcryptjs": "^3.0.3",
     "framer-motion": "^12.33.0",
     "jose": "^6.2.3",
@@ -38,7 +33,6 @@
     "eslint-config-next": "16.1.6",
     "prisma": "^6.19.3",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "wrangler": "^4.110.0"
+    "typescript": "^5"
   }
 }

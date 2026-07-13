@@ -20,7 +20,6 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  serverExternalPackages: ["@prisma/client", ".prisma/client"],
   poweredByHeader: false,
   turbopack: {
     root: path.resolve(__dirname),
