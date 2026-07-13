@@ -92,7 +92,7 @@ export default function NewsArticles({ articles }: { articles: Article[] }) {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   whileHover={{ y: -10 }}
                   whileTap={{ scale: 0.985 }}
-                  className="min-w-[calc(100%-2rem)] sm:min-w-[calc(50%-1rem)] lg:min-w-[calc(33.333%-1.5rem)] group cursor-pointer"
+                  className="min-w-[calc(100%-2rem)] sm:min-w-[calc(50%-1rem)] lg:min-w-[calc(33.333%-1.5rem)] group cursor-pointer will-change-transform"
                   onClick={() => handleArticleClick(article)}
                 >
                   <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[2.5rem] mb-8 shadow-sm group-hover:shadow-2xl group-hover:shadow-brand-primary/10 transition-all duration-500 bg-gray-50 border border-gray-100">

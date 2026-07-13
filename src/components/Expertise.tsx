@@ -101,7 +101,6 @@ export default function Expertise({ specializations }: { specializations: Specia
           <div className="relative">
             <div
               ref={scrollRef}
-              data-lenis-prevent
               className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-none pb-8 snap-x snap-mandatory px-6 -mx-6 scroll-px-6 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 md:overflow-visible md:px-0 md:mx-0 md:pb-0 md:snap-none"
             >
               {specializations.map((spec, index) => (
@@ -126,11 +125,9 @@ export default function Expertise({ specializations }: { specializations: Specia
                   whileHover={{ 
                     y: -10, 
                     scale: 1.02,
-                    boxShadow: "0 20px 40px -15px rgba(143, 163, 163, 0.12)",
-                    borderColor: "rgba(143, 163, 163, 0.3)"
                   }}
                   whileTap={{ scale: 0.98 }}
-                  className="group bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex flex-col justify-between cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand-primary snap-start shrink-0 w-[290px] sm:w-[350px] md:w-full md:shrink md:snap-none min-h-[300px] transition-[border-color] duration-300"
+                  className="group bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex flex-col justify-between cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand-primary snap-start shrink-0 w-[290px] sm:w-[350px] md:w-full md:shrink md:snap-none min-h-[300px] transition-all duration-300 ease-out hover:border-brand-primary/30 hover:shadow-[0_20px_40px_-15px_rgba(143,163,163,0.12)] will-change-transform"
                 >
                   <div className="flex-grow flex flex-col justify-between">
                     <div>
