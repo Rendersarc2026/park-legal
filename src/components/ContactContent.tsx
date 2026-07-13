@@ -1,10 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Phone, Mail, MapPin, ExternalLink, User, HelpCircle } from 'lucide-react';
 import Link from 'next/link';
-import AdminLoader from '@/components/AdminLoader';
+import type { ContactData } from '@/lib/content';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -13,38 +12,8 @@ const fadeInUp = {
   transition: { duration: 0.6, ease: "easeOut" }
 } as const;
 
-interface DirectContact {
-  name: string;
-  phone: string;
-}
-
-interface ContactData {
-  phone: string;
-  email: string;
-  address: string;
-  directionsLink: string;
-  directContacts: DirectContact[];
-}
-
-export default function ContactContent() {
-  const [contactData, setContactData] = useState<ContactData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/admin/contact')
-      .then(res => res.json())
-      .then(data => {
-        if (data && !data.error) {
-          setContactData(data);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
-  if (loading) {
-    return <AdminLoader message="Loading contact information..." className="h-[calc(100vh-6rem)]" />;
-  }
+export default function ContactContent({ contact }: { contact: ContactData | null }) {
+  const contactData = contact;
 
   if (!contactData) {
     return (

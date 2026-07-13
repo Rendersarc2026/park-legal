@@ -1,24 +1,43 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { revalidatePath } from 'next/cache';
+import { requireAuth } from '@/lib/auth';
+import { badRequest, isRecordNotFound, isValidObjectId, notFound, revalidateContent, serverError } from '@/lib/api';
+import * as yup from 'yup';
 
 export const dynamic = 'force-dynamic';
 
+const articleSchema = yup.object({
+  title: yup.string().trim().max(300).required('Title is required'),
+  excerpt: yup.string().trim().max(1000).required('Excerpt is required'),
+  content: yup.string().trim().max(50000).default(''),
+  date: yup
+    .string()
+    .trim()
+    .matches(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY-MM-DD format')
+    .required('Date is required'),
+  category: yup.string().trim().max(100).required('Category is required'),
+  imageUrl: yup
+    .string()
+    .trim()
+    .max(2000)
+    .matches(/^(\/|https:\/\/)/, 'Image URL must be a relative path or an https URL')
+    .required('Image is required'),
+});
+
 export async function GET(request: Request) {
+  const { response: authError } = await requireAuth();
+  if (authError) return authError;
+
   try {
     const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page') || '1', 10);
-    const limit = parseInt(searchParams.get('limit') || '5', 10);
-    const skip = (page - 1) * limit;
+    const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '5', 10) || 5));
 
     const [articles, total] = await Promise.all([
       prisma.article.findMany({
         where: { isActive: true },
-        orderBy: [
-          { date: 'desc' },
-          { createdAt: 'desc' }
-        ],
-        skip,
+        orderBy: [{ date: 'desc' }, { createdAt: 'desc' }],
+        skip: (page - 1) * limit,
         take: limit,
       }),
       prisma.article.count({ where: { isActive: true } }),
@@ -32,97 +51,68 @@ export async function GET(request: Request) {
       totalPages: Math.ceil(total / limit),
     });
   } catch (err) {
-    const error = err as Error;
-    console.error('Prisma Error:', error);
-    return NextResponse.json({ error: 'Failed to fetch articles', details: error.message }, { status: 500 });
+    return serverError('Failed to fetch articles:', err);
   }
 }
 
 export async function POST(request: Request) {
+  const { response: authError } = await requireAuth();
+  if (authError) return authError;
+
   try {
-    const data = await request.json();
-    const article = await prisma.article.create({
-      data: {
-        title: data.title,
-        excerpt: data.excerpt,
-        content: data.content,
-        date: data.date,
-        category: data.category,
-        imageUrl: data.imageUrl,
-      },
+    // stripUnknown keeps the client away from isActive / createdAt / id.
+    const data = await articleSchema.validate(await request.json(), {
+      abortEarly: false,
+      stripUnknown: true,
     });
-    revalidatePath('/admin');
+
+    const article = await prisma.article.create({ data });
+    revalidateContent('/', '/admin');
     return NextResponse.json(article);
   } catch (err) {
-    const error = err as Error;
-    console.error('Prisma Create Error:', error);
-    return NextResponse.json({ error: 'Failed to create article', details: error.message }, { status: 500 });
+    if (err instanceof yup.ValidationError) return badRequest(err.errors[0]);
+    return serverError('Failed to create article:', err);
   }
 }
 
 export async function PUT(request: Request) {
-  try {
-    const data = await request.json();
-    const { id, ...updateData } = data;
-    
-    if (!id) {
-      return NextResponse.json({ error: 'ID is required' }, { status: 400 });
-    }
+  const { response: authError } = await requireAuth();
+  if (authError) return authError;
 
-    const article = await prisma.article.update({
-      where: { id },
-      data: {
-        title: updateData.title,
-        excerpt: updateData.excerpt,
-        content: updateData.content,
-        date: updateData.date,
-        category: updateData.category,
-        imageUrl: updateData.imageUrl,
-      },
+  try {
+    const body = await request.json();
+
+    if (!isValidObjectId(body?.id)) return badRequest('A valid ID is required');
+
+    const data = await articleSchema.validate(body, {
+      abortEarly: false,
+      stripUnknown: true,
     });
-    revalidatePath('/admin');
+
+    const article = await prisma.article.update({ where: { id: body.id }, data });
+    revalidateContent('/', '/admin');
     return NextResponse.json(article);
   } catch (err) {
-    const error = err as { code?: string; message?: string };
-    console.error('Prisma Update Error:', error);
-    
-    // Handle record not found error (P2025)
-    if (error.code === 'P2025') {
-      return NextResponse.json({ 
-        error: 'Article not found', 
-        details: 'The article you are trying to update no longer exists.' 
-      }, { status: 404 });
-    }
-    
-    return NextResponse.json({ error: 'Failed to update article', details: error.message }, { status: 500 });
+    if (err instanceof yup.ValidationError) return badRequest(err.errors[0]);
+    if (isRecordNotFound(err)) return notFound('Article not found');
+    return serverError('Failed to update article:', err);
   }
 }
 
 export async function DELETE(request: Request) {
+  const { response: authError } = await requireAuth();
+  if (authError) return authError;
+
   try {
     const { id } = await request.json();
-    
-    if (!id) {
-      return NextResponse.json({ error: 'ID is required' }, { status: 400 });
-    }
 
-    await prisma.article.update({ 
-      where: { id },
-      data: { isActive: false }
-    });
-    revalidatePath('/admin');
+    if (!isValidObjectId(id)) return badRequest('A valid ID is required');
+
+    await prisma.article.update({ where: { id }, data: { isActive: false } });
+    revalidateContent('/', '/admin');
     return NextResponse.json({ success: true });
   } catch (err) {
-    const error = err as { code?: string; message?: string };
-    console.error('Prisma Delete Error:', error);
-    
-    if (error.code === 'P2025') {
-      return NextResponse.json({ 
-        error: 'Article not found', 
-        details: 'The article you are trying to delete no longer exists.' 
-      }, { status: 404 });
-    }
-    
-    return NextResponse.json({ error: 'Failed to delete article', details: error.message }, { status: 500 });
+    if (isRecordNotFound(err)) return notFound('Article not found');
+    return serverError('Failed to delete article:', err);
   }
 }

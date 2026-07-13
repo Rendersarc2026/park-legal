@@ -4,39 +4,13 @@ import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import type { ArticleData } from '@/lib/content';
 
-interface Article {
-  id: string;
-  title: string;
-  excerpt: string;
-  content?: string;
-  date: string;
-  category: string;
-  imageUrl: string;
-}
+type Article = ArticleData;
 
-export default function NewsArticles() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function NewsArticles({ articles }: { articles: Article[] }) {
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  
-  // Fetch more articles for the carousel
-  const limit = 10;
-
-  useEffect(() => {
-    fetch(`/api/admin/news?page=1&limit=${limit}`)
-      .then(r => r.json())
-      .then(data => {
-        if (data.articles) {
-          setArticles(data.articles);
-        } else if (Array.isArray(data)) {
-          setArticles(data);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
 
   useEffect(() => {
     if (selectedArticle) {
@@ -67,7 +41,7 @@ export default function NewsArticles() {
     setCurrentIndex((prev) => (prev - 1 + articles.length) % articles.length);
   };
 
-  if (!loading && articles.length === 0) return null;
+  if (articles.length === 0) return null;
 
   return (
     <section className="py-32 bg-white relative overflow-hidden font-sans">

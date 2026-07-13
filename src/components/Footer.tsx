@@ -1,19 +1,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, MapPin, Phone, ArrowUpRight } from 'lucide-react';
-import { prisma } from '@/lib/prisma';
+import { getContact } from '@/lib/content';
 
 export default async function Footer() {
-  let contact = null;
-  try {
-    if (prisma && prisma.contactDetails) {
-      contact = await prisma.contactDetails.findFirst({
-        where: { isActive: true }
-      });
-    }
-  } catch (err) {
-    console.error('Error fetching contact details in Footer:', err);
-  }
+  // Cached per request, so rendering this alongside the contact page costs one query.
+  const contact = await getContact();
 
   const displayAddress = contact?.address || "";
   const displayEmail = contact?.email || "";

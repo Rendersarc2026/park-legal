@@ -1,35 +1,26 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { jwtVerify } from 'jose';
+import { AUTH_COOKIE, verifySession } from '@/lib/jwt';
 
 export async function proxy(request: NextRequest) {
-  const token = request.cookies.get('admin_token')?.value;
+  const { pathname } = request.nextUrl;
+  const token = request.cookies.get(AUTH_COOKIE)?.value;
+  const session = await verifySession(token);
 
-  if (request.nextUrl.pathname.startsWith('/admin') && !request.nextUrl.pathname.startsWith('/admin/login')) {
-    if (!token) {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
-    }
-    try {
-      const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'supersecretjwtsecret1234567890');
-      await jwtVerify(token, secret);
-    } catch (err) {
-      console.error('Proxy auth error:', err);
-      // Invalid or expired token
+  // Admin pages: send unauthenticated visitors to the login screen.
+  // The /api/admin routes are NOT covered by this matcher — each route handler
+  // enforces its own auth via requireAuth().
+  if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
+    if (!session) {
       const response = NextResponse.redirect(new URL('/admin/login', request.url));
-      response.cookies.delete('admin_token');
+      response.cookies.delete(AUTH_COOKIE);
       return response;
     }
   }
 
-  // If already logged in, don't allow access to login page
-  if (request.nextUrl.pathname === '/admin/login' && token) {
-    try {
-      const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'supersecretjwtsecret1234567890');
-      await jwtVerify(token, secret);
-      return NextResponse.redirect(new URL('/admin', request.url));
-    } catch {
-      // Token invalid, allow login page
-    }
+  // Already logged in: skip the login screen.
+  if (pathname === '/admin/login' && session) {
+    return NextResponse.redirect(new URL('/admin', request.url));
   }
 
   return NextResponse.next();

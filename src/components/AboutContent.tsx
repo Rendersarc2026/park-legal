@@ -2,8 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Scale, Shield, Users, Lightbulb, CheckCircle2, History, Target } from 'lucide-react';
-import { useState, useEffect } from 'react';
-import AdminLoader from '@/components/AdminLoader';
+import type { AboutData } from '@/lib/content';
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -21,26 +20,7 @@ const staggerContainer = {
   }
 };
 
-interface AboutData {
-  description: string;
-  points: string[];
-  stats: { label: string; value: string }[];
-}
-
-export default function AboutContent() {
-  const [aboutData, setAboutData] = useState<AboutData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetch('/api/admin/about')
-      .then(r => r.json())
-      .then(data => {
-        if (!data.error) setAboutData(data);
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
-
+export default function AboutContent({ about }: { about: AboutData }) {
   const values = [
     {
       icon: <Scale className="w-5 h-5" />,
@@ -63,10 +43,6 @@ export default function AboutContent() {
       description: "Combining legal traditions with modern, agile solutions for complex challenges."
     }
   ];
-
-  if (loading) {
-    return <AdminLoader message="Loading about page..." className="h-[calc(100vh-6rem)]" />;
-  }
 
   return (
     <div className="flex-grow overflow-hidden font-sans bg-white">
@@ -188,15 +164,10 @@ export default function AboutContent() {
               <div className="lg:col-span-7 space-y-8">
                 <h3 className="text-3xl md:text-4xl font-serif font-light leading-tight">Why Choose Park Legal?</h3>
                 <p className="text-[#666666] text-[15px] leading-relaxed font-light">
-                  {aboutData?.description || "We combine deep legal expertise with a practical understanding of the real-world challenges our clients face. Our proactive approach ensures that we not only address current legal issues but also help prevent future complications."}
+                  {about.description}
                 </p>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  {(aboutData?.points || [
-                    "Decades of experience",
-                    "Specialized expertise",
-                    "Proven track record",
-                    "Transparent fee structure"
-                  ]).map((item: string, i: number) => (
+                  {about.points.map((item, i) => (
                     <div key={i} className="flex items-center space-x-3">
                       <div className="flex-shrink-0 w-5 h-5 rounded-full bg-brand-primary/10 flex items-center justify-center">
                         <CheckCircle2 className="w-3.5 h-3.5 text-brand-primary" />
@@ -209,12 +180,7 @@ export default function AboutContent() {
 
               {/* Stats column */}
               <div className="lg:col-span-5 grid grid-cols-2 gap-4">
-                {(aboutData?.stats || [
-                  { label: "Years Experience", value: "15+" },
-                  { label: "Cases Won", value: "100+" },
-                  { label: "Client Dedication", value: "100%" },
-                  { label: "Legal Support", value: "24/7" }
-                ]).map((stat: { label: string; value: string }, i: number) => (
+                {about.stats.map((stat, i) => (
                   <div key={i} className="bg-gray-50/50 p-6 rounded-2xl border border-gray-200 hover:border-black transition-all duration-300 group text-center">
                     <p className="text-3xl font-light text-brand-primary mb-1 group-hover:scale-105 transition-transform duration-300">{stat.value}</p>
                     <p className="text-[10px] text-[#666666] uppercase tracking-widest font-semibold">{stat.label}</p>

@@ -1,126 +1,118 @@
 import { NextResponse } from 'next/server';
-import { SignJWT } from 'jose';
 import { prisma } from '@/lib/prisma';
+import { serverError } from '@/lib/api';
+import { setSessionCookie, signSession } from '@/lib/auth';
 import bcrypt from 'bcryptjs';
+import { randomBytes } from 'crypto';
+
+export const dynamic = 'force-dynamic';
+
+const MAX_USER_ATTEMPTS = 5;
+const MAX_IP_ATTEMPTS = 10;
+const LOCK_DURATION_MS = 5 * 60 * 1000;
+
+/**
+ * A hash of a throwaway value with the same cost factor as real passwords. When
+ * the username does not exist we still compare against this, so response time
+ * cannot be used to tell real usernames from fake ones.
+ */
+const DUMMY_HASH = bcrypt.hashSync(randomBytes(32).toString('hex'), 10);
+
+/** x-forwarded-for is a client-supplied list; only the first hop is meaningful. */
+function getClientIp(request: Request): string {
+  const forwarded = request.headers.get('x-forwarded-for');
+  const first = forwarded?.split(',')[0]?.trim();
+  return first && first.length <= 45 ? first : 'unknown';
+}
+
+function isLocked(attempt: { lockUntil: Date | null } | null): boolean {
+  return !!attempt?.lockUntil && attempt.lockUntil > new Date();
+}
+
+/** Attempts reset once a lock has expired. */
+function currentAttempts(attempt: { attempts: number; lockUntil: Date | null } | null): number {
+  if (!attempt) return 0;
+  if (attempt.lockUntil && attempt.lockUntil <= new Date()) return 0;
+  return attempt.attempts;
+}
+
+async function recordFailure(username: string, ipKey: string, userAttempts: number, ipAttempts: number) {
+  const attempts = userAttempts + 1;
+  const ipCount = ipAttempts + 1;
+  const lockUntil =
+    attempts >= MAX_USER_ATTEMPTS || ipCount >= MAX_IP_ATTEMPTS
+      ? new Date(Date.now() + LOCK_DURATION_MS)
+      : null;
+
+  await Promise.all([
+    prisma.loginAttempt.upsert({
+      where: { username },
+      update: { attempts, lockUntil },
+      create: { username, attempts, lockUntil },
+    }),
+    prisma.loginAttempt.upsert({
+      where: { username: ipKey },
+      update: { attempts: ipCount, lockUntil },
+      create: { username: ipKey, attempts: ipCount, lockUntil },
+    }),
+  ]);
+}
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { username: rawUsername, password } = body;
-    const username = rawUsername?.toLowerCase();
+    const username =
+      typeof body?.username === 'string' ? body.username.trim().toLowerCase() : '';
+    const password = typeof body?.password === 'string' ? body.password : '';
 
     if (!username || !password) {
       return NextResponse.json({ error: 'Username and password are required' }, { status: 400 });
     }
 
-    const ip = request.headers.get('x-forwarded-for') || 'unknown';
+    const ipKey = `ip_${getClientIp(request)}`;
 
-    // Check for login lock (by username or IP)
-    const [loginAttempt, ipAttempt] = await Promise.all([
+    const [userAttempt, ipAttempt] = await Promise.all([
       prisma.loginAttempt.findUnique({ where: { username } }),
-      prisma.loginAttempt.findUnique({ where: { username: `ip_${ip}` } })
+      prisma.loginAttempt.findUnique({ where: { username: ipKey } }),
     ]);
 
-    const activeLock = (loginAttempt?.lockUntil && loginAttempt.lockUntil > new Date()) ? loginAttempt : 
-                      (ipAttempt?.lockUntil && ipAttempt.lockUntil > new Date()) ? ipAttempt : null;
+    const activeLock = isLocked(userAttempt) ? userAttempt : isLocked(ipAttempt) ? ipAttempt : null;
 
-    if (activeLock) {
-      const remainingMinutes = Math.ceil((activeLock.lockUntil!.getTime() - Date.now()) / 1000 / 60);
-      return NextResponse.json({ 
-        error: `Too many failed attempts. Please try again in ${remainingMinutes} minute${remainingMinutes > 1 ? 's' : ''}.` 
-      }, { status: 429 });
+    if (activeLock?.lockUntil) {
+      const remainingMinutes = Math.ceil((activeLock.lockUntil.getTime() - Date.now()) / 1000 / 60);
+      return NextResponse.json(
+        {
+          error: `Too many failed attempts. Please try again in ${remainingMinutes} minute${
+            remainingMinutes > 1 ? 's' : ''
+          }.`,
+        },
+        { status: 429 }
+      );
     }
 
-    // If lock expired, reset attempts (optional but better UX)
-    let currentAttempts = loginAttempt?.attempts || 0;
-    if (loginAttempt?.lockUntil && loginAttempt.lockUntil <= new Date()) {
-      currentAttempts = 0;
-    }
-    
-    let currentIpAttempts = ipAttempt?.attempts || 0;
-    if (ipAttempt?.lockUntil && ipAttempt.lockUntil <= new Date()) {
-      currentIpAttempts = 0;
-    }
+    const userAttempts = currentAttempts(userAttempt);
+    const ipAttempts = currentAttempts(ipAttempt);
 
-    const admin = await prisma.adminUser.findUnique({
-      where: { username },
-    });
+    const admin = await prisma.adminUser.findUnique({ where: { username } });
 
-    if (!admin || !admin.isActive) {
-      // Record failed attempt
-      const attempts = currentAttempts + 1;
-      const ipAttempts = currentIpAttempts + 1;
-      const lockUntil = attempts >= 5 || ipAttempts >= 10 ? new Date(Date.now() + 5 * 60 * 1000) : null;
-      
-      await Promise.all([
-        prisma.loginAttempt.upsert({
-          where: { username },
-          update: { attempts, lockUntil },
-          create: { username, attempts, lockUntil },
-        }),
-        prisma.loginAttempt.upsert({
-          where: { username: `ip_${ip}` },
-          update: { attempts: ipAttempts, lockUntil },
-          create: { username: `ip_${ip}`, attempts: ipAttempts, lockUntil },
-        })
-      ]);
+    // Always run a bcrypt comparison, even for an unknown user, so that timing
+    // cannot be used to enumerate valid usernames.
+    const isPasswordCorrect = await bcrypt.compare(password, admin?.password ?? DUMMY_HASH);
 
-      console.log(`Admin user not found or inactive for username: "${username}" (IP: ${ip})`);
+    if (!admin || !admin.isActive || !isPasswordCorrect) {
+      await recordFailure(username, ipKey, userAttempts, ipAttempts);
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(password, admin.password);
-
-    if (isPasswordCorrect) {
-      // Reset attempts on success
-      await Promise.all([
-        prisma.loginAttempt.deleteMany({ where: { username } }),
-        prisma.loginAttempt.deleteMany({ where: { username: `ip_${ip}` } })
-      ]);
-
-      console.log('Login successful for:', username);
-      const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'supersecretjwtsecret1234567890');
-      
-      const token = await new SignJWT({ username })
-        .setProtectedHeader({ alg: 'HS256' })
-        .setExpirationTime('12h')
-        .sign(secret);
-
-      const response = NextResponse.json({ success: true });
-      response.cookies.set({
-        name: 'admin_token',
-        value: token,
-        httpOnly: true,
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 60 * 60 * 12, // 12 hours
-      });
-
-      return response;
-    }
-
-    // Record failed attempt for existing user with wrong password
-    const attempts = currentAttempts + 1;
-    const ipAttempts = currentIpAttempts + 1;
-    const lockUntil = attempts >= 5 || ipAttempts >= 10 ? new Date(Date.now() + 5 * 60 * 1000) : null;
-    
     await Promise.all([
-      prisma.loginAttempt.upsert({
-        where: { username },
-        update: { attempts, lockUntil },
-        create: { username, attempts, lockUntil },
-      }),
-      prisma.loginAttempt.upsert({
-        where: { username: `ip_${ip}` },
-        update: { attempts: ipAttempts, lockUntil },
-        create: { username: `ip_${ip}`, attempts: ipAttempts, lockUntil },
-      })
+      prisma.loginAttempt.deleteMany({ where: { username } }),
+      prisma.loginAttempt.deleteMany({ where: { username: ipKey } }),
     ]);
 
-    console.log('Invalid password for:', username, `(IP: ${ip})`);
-    return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    const response = NextResponse.json({ success: true });
+    setSessionCookie(response, await signSession(admin.username));
+    return response;
   } catch (err) {
-    console.error('Login error:', err);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    return serverError('Login error:', err);
   }
 }

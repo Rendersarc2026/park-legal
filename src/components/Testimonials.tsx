@@ -3,26 +3,11 @@
 import { Quote, Star, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useCallback } from 'react';
+import type { TestimonialData } from '@/lib/content';
 
-interface Testimonial {
-  id: string;
-  quote: string;
-  stars: number;
-  author: string | null;
-}
-
-export default function Testimonials() {
-  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+export default function Testimonials({ testimonials }: { testimonials: TestimonialData[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
-
-  useEffect(() => {
-    // Fetch with a larger limit for the public carousel
-    fetch('/api/admin/testimonials?limit=20').then(r => r.json()).then(data => {
-      if (data.testimonials) setTestimonials(data.testimonials);
-      else if (Array.isArray(data)) setTestimonials(data);
-    });
-  }, []);
 
   const paginate = useCallback((newDirection: number) => {
     setDirection(newDirection);

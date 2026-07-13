@@ -11,8 +11,10 @@ const schema = yup.object({
   currentPassword: yup.string().required('Current password is required'),
   newPassword: yup.string()
     .required('New password is required')
-    .min(6, 'Must be at least 6 characters')
+    .min(10, 'Must be at least 10 characters')
+    .max(200, 'Password is too long')
     .matches(/[A-Z]/, 'Must contain at least one uppercase letter')
+    .matches(/[a-z]/, 'Must contain at least one lowercase letter')
     .matches(/[0-9]/, 'Must contain at least one number'),
   confirmPassword: yup.string()
     .required('Confirm password is required')
@@ -166,7 +168,7 @@ export default function ChangePasswordModal({ isOpen, onClose }: ChangePasswordM
             {errors.newPassword && (
               <p className="text-red-500 text-xs">{errors.newPassword.message}</p>
             )}
-            <p className="text-xs text-gray-400">Min 6 characters, 1 uppercase, 1 number</p>
+            <p className="text-xs text-gray-400">Min 10 characters, 1 uppercase, 1 lowercase, 1 number</p>
           </div>
 
           {/* Confirm Password */}

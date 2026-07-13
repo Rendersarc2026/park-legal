@@ -2,23 +2,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
-import * as LucideIcons from 'lucide-react';
+import { ArrowUpRight, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import type { SpecializationData } from '@/lib/content';
 
-
-interface Specialization {
-  id: string;
-  label: string;
-  description: string;
-  details: string[];
-}
-
-interface DBSpecialization {
-  id: string;
-  icon: string;
-  label: string;
-  description: string;
-  details: string[];
-}
+type Specialization = SpecializationData;
 
 const containerVariants: Variants = {
   initial: {},
@@ -38,8 +25,7 @@ const itemVariants: Variants = {
   }
 };
 
-export default function Expertise() {
-  const [specializations, setSpecializations] = useState<Specialization[]>([]);
+export default function Expertise({ specializations }: { specializations: Specialization[] }) {
   const [selectedSpecialization, setSelectedSpecialization] = useState<Specialization | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -83,25 +69,6 @@ export default function Expertise() {
       scrollRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
-
-  useEffect(() => {
-    fetch('/api/admin/specializations')
-      .then(r => r.json())
-      .then(data => {
-        if (data.specializations) {
-          const mapped = data.specializations.map((item: DBSpecialization) => {
-            return {
-              id: item.id,
-              label: item.label,
-              description: item.description,
-              details: item.details,
-            };
-          });
-          setSpecializations(mapped);
-        }
-      })
-      .catch(err => console.error('Error fetching specializations:', err));
-  }, []);
 
   // Prevent scroll when modal is open
   useEffect(() => {
@@ -185,7 +152,7 @@ export default function Expertise() {
 
                     <div className="mt-8 pt-6 border-t border-gray-50 flex items-center gap-2 text-brand-primary font-medium text-sm transition-all duration-300">
                       <span className="group-hover:translate-x-1 transition-transform duration-300">Read Full Details</span>
-                      <LucideIcons.ArrowUpRight size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                      <ArrowUpRight size={16} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
                     </div>
                   </div>
                 </motion.div>
@@ -217,7 +184,7 @@ export default function Expertise() {
                   }`}
                   aria-label="Scroll left"
                 >
-                  <LucideIcons.ChevronLeft size={16} />
+                  <ChevronLeft size={16} />
                 </button>
                 <button
                   onClick={() => scroll('right')}
@@ -229,7 +196,7 @@ export default function Expertise() {
                   }`}
                   aria-label="Scroll right"
                 >
-                  <LucideIcons.ChevronRight size={16} />
+                  <ChevronRight size={16} />
                 </button>
               </div>
             </div>
@@ -264,7 +231,7 @@ export default function Expertise() {
                 className="absolute top-6 right-6 p-2 rounded-full bg-gray-50 text-text-muted hover:bg-brand-primary hover:text-white transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-brand-primary"
                 aria-label="Close modal"
               >
-                <LucideIcons.X size={20} />
+                <X size={20} />
               </button>
 
               <div>

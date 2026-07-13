@@ -1,16 +1,20 @@
 import { NextResponse } from 'next/server';
-import { jwtVerify } from 'jose';
 import { prisma } from '@/lib/prisma';
+import { requireAuth, setSessionCookie, signSession } from '@/lib/auth';
+import { badRequest, serverError } from '@/lib/api';
 import bcrypt from 'bcryptjs';
 import * as yup from 'yup';
-import { cookies } from 'next/headers';
+
+export const dynamic = 'force-dynamic';
 
 const changePasswordSchema = yup.object({
   currentPassword: yup.string().required('Current password is required'),
   newPassword: yup.string()
     .required('New password is required')
-    .min(6, 'New password must be at least 6 characters')
+    .min(10, 'New password must be at least 10 characters')
+    .max(200, 'New password is too long')
     .matches(/[A-Z]/, 'Must contain at least one uppercase letter')
+    .matches(/[a-z]/, 'Must contain at least one lowercase letter')
     .matches(/[0-9]/, 'Must contain at least one number'),
   confirmPassword: yup.string()
     .required('Confirm password is required')
@@ -18,82 +22,41 @@ const changePasswordSchema = yup.object({
 });
 
 export async function POST(request: Request) {
+  const { session, response: authError } = await requireAuth();
+  if (authError) return authError;
+
   try {
-    // Verify JWT token from cookie
-    const cookieStore = await cookies();
-    const token = cookieStore.get('admin_token')?.value;
+    const { currentPassword, newPassword } = await changePasswordSchema.validate(
+      await request.json(),
+      { abortEarly: false, stripUnknown: true }
+    );
 
-    if (!token) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'supersecretjwtsecret1234567890');
-    let payload: { username?: string };
-
-    try {
-      const verified = await jwtVerify(token, secret);
-      payload = verified.payload as { username?: string };
-    } catch {
-      return NextResponse.json({ error: 'Invalid or expired session' }, { status: 401 });
-    }
-
-    if (!payload.username) {
-      return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
-    }
-
-    // Validate request body
-    const body = await request.json();
-    
-    try {
-      await changePasswordSchema.validate(body, { abortEarly: false });
-    } catch (validationError) {
-      if (validationError instanceof yup.ValidationError) {
-        return NextResponse.json(
-          { error: validationError.errors[0] },
-          { status: 400 }
-        );
-      }
-      return NextResponse.json({ error: 'Validation failed' }, { status: 400 });
-    }
-
-    const { currentPassword, newPassword } = body as {
-      currentPassword: string;
-      newPassword: string;
-      confirmPassword: string;
-    };
-
-    // Find admin user
-    const admin = await prisma.adminUser.findUnique({
-      where: { username: payload.username },
-    });
+    const admin = await prisma.adminUser.findUnique({ where: { username: session.username } });
 
     if (!admin) {
       return NextResponse.json({ error: 'Admin user not found' }, { status: 404 });
     }
 
-    // Verify current password
-    const isCurrentPasswordValid = await bcrypt.compare(currentPassword, admin.password);
-
-    if (!isCurrentPasswordValid) {
-      return NextResponse.json({ error: 'Current password is incorrect' }, { status: 400 });
+    if (!(await bcrypt.compare(currentPassword, admin.password))) {
+      return badRequest('Current password is incorrect');
     }
 
-    // Prevent reusing the same password
-    const isSamePassword = await bcrypt.compare(newPassword, admin.password);
-    if (isSamePassword) {
-      return NextResponse.json({ error: 'New password must be different from current password' }, { status: 400 });
+    if (await bcrypt.compare(newPassword, admin.password)) {
+      return badRequest('New password must be different from current password');
     }
 
-    // Hash and save new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
     await prisma.adminUser.update({
-      where: { username: payload.username },
-      data: { password: hashedPassword },
+      where: { username: session.username },
+      data: { password: await bcrypt.hash(newPassword, 10) },
     });
 
-    return NextResponse.json({ success: true, message: 'Password changed successfully' });
+    // Issue a fresh session so the rest of the 12h window runs on a token minted
+    // after the password change.
+    const response = NextResponse.json({ success: true, message: 'Password changed successfully' });
+    setSessionCookie(response, await signSession(admin.username));
+    return response;
   } catch (err) {
-    console.error('Change password error:', err);
-    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+    if (err instanceof yup.ValidationError) return badRequest(err.errors[0]);
+    return serverError('Change password error:', err);
   }
 }

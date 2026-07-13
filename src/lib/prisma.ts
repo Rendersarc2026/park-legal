@@ -1,21 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
-
-let localPrisma = globalForPrisma.prisma;
-
-// In development, if the cached prisma instance is missing new models, recreate it
-if (!localPrisma || (process.env.NODE_ENV !== 'production' && !('specialization' in localPrisma))) {
-  localPrisma = new PrismaClient({
-    datasources: {
-      db: {
-        url: process.env.MONGODB_URI,
-      },
-    },
-  });
-  if (process.env.NODE_ENV !== 'production') {
-    globalForPrisma.prisma = localPrisma;
-  }
+if (!process.env.MONGODB_URI) {
+  throw new Error('MONGODB_URI is not set.');
 }
 
-export const prisma = localPrisma;
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
+
+function createClient() {
+  return new PrismaClient({
+    datasources: { db: { url: process.env.MONGODB_URI } },
+    log: process.env.NODE_ENV === 'production' ? ['error'] : ['error', 'warn'],
+  });
+}
+
+// Reuse one client across hot reloads in dev; a fresh one per process in prod.
+export const prisma = globalForPrisma.prisma ?? createClient();
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma;
+}

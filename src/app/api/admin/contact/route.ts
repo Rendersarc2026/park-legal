@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { requireAuth } from '@/lib/auth';
+import { badRequest, notFound, revalidateContent, serverError } from '@/lib/api';
 import * as yup from 'yup';
+
+export const dynamic = 'force-dynamic';
 
 const noScript = (value: string | undefined): boolean => {
   if (!value) return true;
@@ -21,80 +25,62 @@ const phoneValidation = yup.string()
   .required('Phone number is required');
 
 const directContactSchema = yup.object({
-  name: yup.string().required('Contact name is required').test('no-script', 'Script tags are not allowed', noScript),
+  name: yup.string().trim().max(200).required('Contact name is required').test('no-script', 'Script tags are not allowed', noScript),
   phone: phoneValidation,
 });
 
 const contactDetailsSchema = yup.object({
   phone: phoneValidation,
-  email: yup.string().email('Must be a valid email').required('Email address is required').test('no-script', 'Script tags are not allowed', noScript),
-  address: yup.string().required('Address is required').test('no-script', 'Script tags are not allowed', noScript),
-  directionsLink: yup.string().url('Must be a valid URL').required('Directions link is required').test('no-script', 'Script tags are not allowed', noScript),
-  directContacts: yup.array().of(directContactSchema).required('Direct contacts list is required'),
+  email: yup.string().trim().max(320).email('Must be a valid email').required('Email address is required').test('no-script', 'Script tags are not allowed', noScript),
+  address: yup.string().trim().max(1000).required('Address is required').test('no-script', 'Script tags are not allowed', noScript),
+  // Rendered straight into an href, so only http(s) is accepted — this is what
+  // keeps a javascript: URL out of the link.
+  directionsLink: yup
+    .string()
+    .trim()
+    .max(2000)
+    .url('Must be a valid URL')
+    .matches(/^https?:\/\//i, 'Directions link must start with http:// or https://')
+    .required('Directions link is required'),
+  directContacts: yup.array().of(directContactSchema).max(20).required('Direct contacts list is required'),
 });
 
 export async function GET() {
+  const { response: authError } = await requireAuth();
+  if (authError) return authError;
+
   try {
-    if (!prisma || !prisma.contactDetails) {
-      return NextResponse.json({ error: 'Database model not initialized. Please restart the dev server.' }, { status: 500 });
-    }
-    const contact = await prisma.contactDetails.findFirst({
-      where: { isActive: true }
-    });
-    
-    if (!contact) {
-      return NextResponse.json({ error: 'Contact details not found' }, { status: 404 });
-    }
-    
+    const contact = await prisma.contactDetails.findFirst({ where: { isActive: true } });
+
+    if (!contact) return notFound('Contact details not found');
+
     return NextResponse.json(contact);
-  } catch {
-    return NextResponse.json({ error: 'Failed to fetch contact details' }, { status: 500 });
+  } catch (err) {
+    return serverError('Failed to fetch contact details:', err);
   }
 }
 
 export async function POST(request: Request) {
+  const { response: authError } = await requireAuth();
+  if (authError) return authError;
+
   try {
-    if (!prisma || !prisma.contactDetails) {
-      return NextResponse.json({ error: 'Database model not initialized. Please restart the dev server.' }, { status: 500 });
-    }
-    const bodyJson = await request.json();
-    
-    // Backend validation using Yup
-    const validatedData = await contactDetailsSchema.validate(bodyJson, {
+    const data = await contactDetailsSchema.validate(await request.json(), {
       abortEarly: false,
       stripUnknown: true,
     });
-    
+
     const existing = await prisma.contactDetails.findFirst();
-    
-    if (existing) {
-      const updated = await prisma.contactDetails.update({
-        where: { id: existing.id },
-        data: {
-          phone: validatedData.phone,
-          email: validatedData.email,
-          address: validatedData.address,
-          directionsLink: validatedData.directionsLink,
-          directContacts: validatedData.directContacts,
-        },
-      });
-      return NextResponse.json(updated);
-    } else {
-      const created = await prisma.contactDetails.create({
-        data: {
-          phone: validatedData.phone,
-          email: validatedData.email,
-          address: validatedData.address,
-          directionsLink: validatedData.directionsLink,
-          directContacts: validatedData.directContacts,
-        },
-      });
-      return NextResponse.json(created);
-    }
-  } catch (err: unknown) {
-    if (err instanceof yup.ValidationError) {
-      return NextResponse.json({ error: err.errors[0] }, { status: 400 });
-    }
-    return NextResponse.json({ error: 'Failed to save contact details' }, { status: 500 });
+
+    const saved = existing
+      ? await prisma.contactDetails.update({ where: { id: existing.id }, data })
+      : await prisma.contactDetails.create({ data });
+
+    // The footer renders contact details on every public page.
+    revalidateContent('/', '/about', '/contact');
+    return NextResponse.json(saved);
+  } catch (err) {
+    if (err instanceof yup.ValidationError) return badRequest(err.errors[0]);
+    return serverError('Failed to save contact details:', err);
   }
 }
