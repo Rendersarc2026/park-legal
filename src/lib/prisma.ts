@@ -1,13 +1,9 @@
 import { PrismaClient } from '@prisma/client/edge';
 import { withAccelerate } from '@prisma/extension-accelerate';
 
-if (!process.env.MONGODB_URI) {
-  throw new Error('MONGODB_URI is not set.');
-}
-
-function createClient() {
+function createClient(url: string) {
   return new PrismaClient({
-    datasources: { db: { url: process.env.MONGODB_URI } },
+    datasources: { db: { url } },
     log: process.env.NODE_ENV === 'production' ? ['error'] : ['error', 'warn'],
   }).$extends(withAccelerate());
 }
@@ -16,9 +12,20 @@ type ExtendedPrismaClient = ReturnType<typeof createClient>;
 
 const globalForPrisma = globalThis as unknown as { prisma?: ExtendedPrismaClient };
 
-// Reuse one client across hot reloads in dev; a fresh one per process in prod.
-export const prisma = globalForPrisma.prisma ?? createClient();
+let _prisma: ExtendedPrismaClient | null = null;
 
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma;
-}
+export const prisma = new Proxy({} as any, {
+  get(target, prop) {
+    if (!_prisma) {
+      const url = process.env.MONGODB_URI;
+      if (!url) {
+        throw new Error('MONGODB_URI is not set. Please configure it in your environment variables.');
+      }
+      _prisma = globalForPrisma.prisma ?? createClient(url);
+      if (process.env.NODE_ENV !== 'production') {
+        globalForPrisma.prisma = _prisma;
+      }
+    }
+    return Reflect.get(_prisma, prop);
+  }
+}) as unknown as ExtendedPrismaClient;
