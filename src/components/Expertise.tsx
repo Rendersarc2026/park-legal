@@ -1,29 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowUpRight, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import type { SpecializationData } from '@/lib/content';
 
 type Specialization = SpecializationData;
-
-const containerVariants: Variants = {
-  initial: {},
-  whileInView: {
-    transition: {
-      staggerChildren: 0.05
-    }
-  }
-};
-
-const itemVariants: Variants = {
-  initial: { opacity: 0, y: 30 },
-  whileInView: { 
-    opacity: 1, 
-    y: 0,
-    transition: { type: 'spring', stiffness: 80, damping: 15 }
-  }
-};
 
 export default function Expertise({ specializations }: { specializations: Specialization[] }) {
   const [selectedSpecialization, setSelectedSpecialization] = useState<Specialization | null>(null);
@@ -117,19 +99,14 @@ export default function Expertise({ specializations }: { specializations: Specia
 
         {specializations.length > 0 && (
           <div className="relative">
-            <motion.div
+            <div
               ref={scrollRef}
               data-lenis-prevent
-              variants={containerVariants}
-              initial="initial"
-              whileInView="whileInView"
-              viewport={{ once: true, margin: "-100px" }}
               className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-none pb-8 snap-x snap-mandatory px-6 -mx-6 scroll-px-6 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-8 md:overflow-visible md:px-0 md:mx-0 md:pb-0 md:snap-none"
             >
               {specializations.map((spec, index) => (
                 <motion.div
                   key={spec.id || index}
-                  variants={itemVariants}
                   onClick={() => setSelectedSpecialization(spec)}
                   role="button"
                   tabIndex={0}
@@ -138,7 +115,22 @@ export default function Expertise({ specializations }: { specializations: Specia
                       setSelectedSpecialization(spec);
                     }
                   }}
-                  className="group bg-white p-8 rounded-3xl border border-gray-100 hover:border-brand-primary/30 shadow-sm hover:shadow-xl hover:shadow-brand-primary/5 transition-all duration-500 flex flex-col justify-between cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand-primary snap-start shrink-0 w-[290px] sm:w-[350px] md:w-full md:shrink md:snap-none min-h-[300px]"
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ 
+                    duration: 0.6, 
+                    ease: [0.16, 1, 0.3, 1], // easeOutExpo
+                    delay: index * 0.08 
+                  }}
+                  whileHover={{ 
+                    y: -10, 
+                    scale: 1.02,
+                    boxShadow: "0 20px 40px -15px rgba(143, 163, 163, 0.12)",
+                    borderColor: "rgba(143, 163, 163, 0.3)"
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  className="group bg-white p-8 rounded-3xl border border-gray-100 shadow-sm flex flex-col justify-between cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-brand-primary snap-start shrink-0 w-[290px] sm:w-[350px] md:w-full md:shrink md:snap-none min-h-[300px] transition-[border-color] duration-300"
                 >
                   <div className="flex-grow flex flex-col justify-between">
                     <div>
@@ -157,7 +149,7 @@ export default function Expertise({ specializations }: { specializations: Specia
                   </div>
                 </motion.div>
               ))}
-            </motion.div>
+            </div>
 
             {/* Scroll Progress Bar & Controls */}
             <div className="flex justify-between items-center mt-6 md:hidden">

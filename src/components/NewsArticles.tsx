@@ -90,6 +90,8 @@ export default function NewsArticles({ articles }: { articles: Article[] }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
+                  whileHover={{ y: -10 }}
+                  whileTap={{ scale: 0.985 }}
                   className="min-w-[calc(100%-2rem)] sm:min-w-[calc(50%-1rem)] lg:min-w-[calc(33.333%-1.5rem)] group cursor-pointer"
                   onClick={() => handleArticleClick(article)}
                 >
