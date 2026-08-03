@@ -309,15 +309,19 @@ export default function AdminNews() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-gray-100 p-6 flex justify-between items-center z-10">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden my-auto border border-gray-100">
+            <div className="flex justify-between items-center px-6 py-5 border-b border-gray-100 shrink-0">
               <h2 className="text-xl font-medium">{editingId ? 'Edit Article' : 'New Article'}</h2>
-              <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full">
+              <button 
+                type="button" 
+                onClick={() => setIsModalOpen(false)} 
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+              >
                 <X size={20} />
               </button>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                 <input 
@@ -367,9 +371,9 @@ export default function AdminNews() {
                     className={`flex-1 px-4 py-2 border rounded-xl bg-gray-50 cursor-not-allowed focus:outline-none ${errors.imageUrl ? 'border-red-500' : 'border-gray-200'}`} 
                     placeholder="Click 'Upload File' to select an image" 
                   />
-                  <label className="cursor-pointer bg-gray-50 px-4 py-2 border border-dashed border-gray-300 rounded-xl hover:bg-gray-100 transition-colors whitespace-nowrap">
+                  <label className={`cursor-pointer px-4 py-2 border border-dashed rounded-xl transition-colors whitespace-nowrap ${uploading ? 'opacity-50 pointer-events-none bg-gray-100 border-gray-300' : 'bg-gray-50 border-gray-300 hover:bg-gray-100'}`}>
                     <span className="text-sm text-gray-600">{uploading ? 'Uploading...' : 'Upload File'}</span>
-                    <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*" />
+                    <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*" disabled={uploading} />
                   </label>
                 </div>
                 {errors.imageUrl && <p className="text-red-500 text-xs mt-1">{errors.imageUrl.message}</p>}
@@ -393,14 +397,14 @@ export default function AdminNews() {
                 />
                 {errors.content && <p className="text-red-500 text-xs mt-1">{errors.content.message}</p>}
               </div>
-              <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 mt-6">
+              <div className="pt-4 flex justify-end gap-3 border-t border-gray-100 mt-6 shrink-0">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-6 py-2 border rounded-xl hover:bg-gray-50">Cancel</button>
                 <button 
                   type="submit" 
-                  disabled={isSubmitting}
-                  className="px-8 py-2.5 bg-gray-900 text-white rounded-xl font-medium hover:bg-black transition-all shadow-sm hover:shadow-md disabled:opacity-50"
+                  disabled={isSubmitting || uploading}
+                  className="px-8 py-2.5 bg-gray-900 text-white rounded-xl font-medium hover:bg-black transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? 'Saving...' : 'Save'}
+                  {uploading ? 'Uploading image...' : isSubmitting ? 'Saving...' : 'Save'}
                 </button>
               </div>
             </form>

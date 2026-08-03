@@ -206,16 +206,20 @@ export default function AdminSpecializations() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] flex flex-col">
-            <div className="flex justify-between items-center p-6 border-b border-gray-100 shrink-0">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden my-auto border border-gray-100">
+            <div className="flex justify-between items-center px-6 py-5 border-b border-gray-100 shrink-0">
               <h2 className="text-xl font-medium">{editingId ? 'Edit Specialization' : 'New Specialization'}</h2>
-              <button onClick={() => setIsModalOpen(false)} className="p-2 hover:bg-gray-100 rounded-full">
+              <button 
+                type="button" 
+                onClick={() => setIsModalOpen(false)} 
+                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+              >
                 <X size={20} />
               </button>
             </div>
             
-            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4 overflow-y-auto flex-1">
+            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
               <div className="grid grid-cols-1 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Label</label>
