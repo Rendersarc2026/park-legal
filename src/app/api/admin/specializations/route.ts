@@ -17,11 +17,40 @@ const specializationSchema = yup.object({
     .required('Details are required'),
 });
 
-export async function GET() {
+export async function GET(request: Request) {
   const { response: authError } = await requireAuth();
   if (authError) return authError;
 
   try {
+    const { searchParams } = new URL(request.url);
+    const pageParam = searchParams.get('page');
+
+    if (pageParam !== null) {
+      const page = Math.max(1, parseInt(pageParam || '1', 10) || 1);
+      const limit = Math.min(50, Math.max(1, parseInt(searchParams.get('limit') || '5', 10) || 5));
+
+      const [specializations, total] = await Promise.all([
+        prisma.specialization.findMany({
+          where: { isActive: true },
+          orderBy: { createdAt: 'asc' },
+          skip: (page - 1) * limit,
+          take: limit,
+        }),
+        prisma.specialization.count({ where: { isActive: true } }),
+      ]);
+
+      return NextResponse.json(
+        {
+          specializations,
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+        { headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' } }
+      );
+    }
+
     const specializations = await prisma.specialization.findMany({
       where: { isActive: true },
       orderBy: { createdAt: 'asc' },

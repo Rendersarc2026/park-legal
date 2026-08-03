@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Plus, Edit2, Trash2, X } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -40,6 +40,11 @@ export default function AdminSpecializations() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [limit] = useState(5);
+
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -50,24 +55,28 @@ export default function AdminSpecializations() {
     }
   });
 
-  const fetchSpecializations = useCallback(async () => {
+  const fetchSpecializations = useCallback(async (page = 1) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/admin/specializations`);
+      const res = await fetch(`/api/admin/specializations?page=${page}&limit=${limit}`);
       if (res.ok) {
         const data = await res.json();
         setSpecializations(data.specializations || []);
+        if (data.totalPages !== undefined) {
+          setTotalPages(data.totalPages || 1);
+          setCurrentPage(data.page || page);
+        }
       }
     } catch {
       toast.error('Failed to fetch specializations');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [limit]);
 
   useEffect(() => {
-    fetchSpecializations();
-  }, [fetchSpecializations]);
+    fetchSpecializations(currentPage);
+  }, [currentPage, fetchSpecializations]);
 
   const handleOpenModal = (item?: Specialization) => {
     if (item) {
@@ -112,7 +121,7 @@ export default function AdminSpecializations() {
       if (res.ok) {
         toast.success(editingId ? 'Specialization updated successfully' : 'Specialization created successfully');
         setIsModalOpen(false);
-        fetchSpecializations();
+        fetchSpecializations(currentPage);
       } else {
         const errorData = await res.json();
         toast.error(errorData.error || 'Failed to save specialization');
@@ -139,7 +148,7 @@ export default function AdminSpecializations() {
 
       if (res.ok) {
         toast.success('Specialization deleted successfully');
-        fetchSpecializations();
+        fetchSpecializations(currentPage);
       } else {
         const errorData = await res.json();
         toast.error(errorData.error || 'Failed to delete specialization');
@@ -163,13 +172,13 @@ export default function AdminSpecializations() {
         </button>
       </div>
 
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-220px)] min-h-[460px]">
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
         {loading ? (
-          <AdminLoader message="Loading specializations..." className="flex-grow" />
+          <AdminLoader message="Loading specializations..." className="py-16" />
         ) : (
-          <div className="overflow-auto flex-1">
+          <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full text-left min-w-[800px]">
-              <thead className="bg-gray-50 text-gray-500 font-medium sticky top-0 z-10 border-b border-gray-100">
+              <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
                 <tr>
                   <th className="px-6 py-4 w-64 bg-gray-50">Label</th>
                   <th className="px-6 py-4 bg-gray-50">Description</th>
@@ -179,7 +188,7 @@ export default function AdminSpecializations() {
               <tbody className="divide-y divide-gray-100">
                 {specializations.map((item) => (
                   <tr key={item.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-gray-900">{item.label}</td>
+                    <td className="px-6 py-4 text-gray-900 font-medium">{item.label}</td>
                     <td className="px-6 py-4 text-gray-500 text-sm">
                       <p className="line-clamp-2">{item.description}</p>
                     </td>
@@ -195,11 +204,39 @@ export default function AdminSpecializations() {
                 ))}
                 {specializations.length === 0 && (
                   <tr>
-                    <td colSpan={4} className="px-6 py-8 text-center text-gray-500">No specializations found.</td>
+                    <td colSpan={3} className="px-6 py-8 text-center text-gray-500">No specializations found.</td>
                   </tr>
                 )}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* Pagination Controls */}
+        {!loading && specializations.length > 0 && (
+          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/50 shrink-0">
+            <p className="text-sm text-gray-500">
+              Page <span className="font-medium text-gray-900">{currentPage}</span> of{' '}
+              <span className="font-medium text-gray-900">{totalPages}</span>
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                disabled={currentPage === 1}
+                className="p-2 border rounded-lg hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title="Previous Page"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              <button
+                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                disabled={currentPage === totalPages}
+                className="p-2 border rounded-lg hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title="Next Page"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
           </div>
         )}
       </div>

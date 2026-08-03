@@ -238,13 +238,13 @@ export default function AdminNews() {
         </button>
       </div>
 
-      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col h-[calc(100vh-220px)] min-h-[460px]">
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden flex flex-col">
         {loading ? (
-          <AdminLoader message="Loading news articles..." className="flex-grow" />
+          <AdminLoader message="Loading news articles..." className="py-16" />
         ) : (
-          <div className="overflow-auto flex-1">
+          <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full text-left min-w-[600px]">
-            <thead className="bg-gray-50 text-gray-500 font-medium sticky top-0 z-10 border-b border-gray-100">
+              <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
               <tr>
                 <th className="px-6 py-4 bg-gray-50">Title</th>
                 <th className="px-6 py-4 bg-gray-50">Date</th>
