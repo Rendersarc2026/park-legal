@@ -73,7 +73,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <X size={20} />
           </button>
         </div>
-        <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+        <nav data-lenis-prevent className="flex-1 p-4 space-y-2 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
@@ -121,7 +121,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </header>
 
         {/* Scrollable Content */}
-        <main className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 lg:p-8 flex flex-col">
+        <main data-lenis-prevent className="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6 lg:p-8 flex flex-col">
           <div className="max-w-6xl w-full mx-auto flex-grow flex flex-col">
             {children}
           </div>

@@ -158,6 +158,7 @@ export default function NewsArticles({ articles }: { articles: Article[] }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            data-lenis-prevent
             className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8"
           >
             <motion.div 
@@ -193,7 +194,7 @@ export default function NewsArticles({ articles }: { articles: Article[] }) {
                 />
               </div>
 
-              <div className="flex-1 overflow-y-auto p-8 md:p-12 bg-white">
+              <div data-lenis-prevent className="flex-1 overflow-y-auto p-8 md:p-12 bg-white">
                 <div className="max-w-3xl mx-auto">
                   <div className="flex items-center gap-4 mb-6">
                     <span className="px-4 py-1.5 bg-brand-primary/10 text-brand-primary rounded-full text-[10px] uppercase tracking-widest font-medium">

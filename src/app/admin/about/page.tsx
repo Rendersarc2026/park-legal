@@ -222,7 +222,7 @@ export default function AdminAbout() {
               </button>
             </div>
             
-            <div className="space-y-4 flex-1 overflow-y-auto pr-2 custom-scrollbar">
+            <div data-lenis-prevent className="space-y-4 flex-1 overflow-y-auto pr-2 custom-scrollbar">
               {pointFields.map((field, i) => (
                 <div key={field.id} className="group relative">
                   <div className="flex gap-2">
@@ -271,7 +271,7 @@ export default function AdminAbout() {
               </button>
             </div>
             
-            <div className="space-y-4 flex-1 overflow-y-auto pr-2 custom-scrollbar">
+            <div data-lenis-prevent className="space-y-4 flex-1 overflow-y-auto pr-2 custom-scrollbar">
               {statFields.map((field, i) => (
                 <div key={field.id} className="space-y-2">
                   <div className="flex gap-2">

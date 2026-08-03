@@ -196,7 +196,7 @@ export default function Expertise({ specializations }: { specializations: Specia
       {/* Specialization Details Modal */}
       <AnimatePresence>
         {selectedSpecialization && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div data-lenis-prevent className="fixed inset-0 z-50 flex items-center justify-center p-4">
             {/* Dark glass backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
@@ -212,6 +212,7 @@ export default function Expertise({ specializations }: { specializations: Specia
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ type: 'spring', damping: 24, stiffness: 180 }}
+              data-lenis-prevent
               className="bg-white/95 border border-gray-100/50 backdrop-blur-xl shadow-2xl rounded-3xl p-8 md:p-12 max-w-3xl w-full max-h-[85vh] overflow-y-auto relative z-10 flex flex-col justify-between scrollbar-none"
             >
               {/* Close Button */}

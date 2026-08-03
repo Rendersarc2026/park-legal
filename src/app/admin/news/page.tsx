@@ -101,6 +101,17 @@ export default function AdminNews() {
     fetchArticles(currentPage);
   }, [currentPage, fetchArticles]);
 
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isModalOpen]);
+
   const [uploading, setUploading] = useState(false);
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -309,7 +320,7 @@ export default function AdminNews() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 sm:p-6 overflow-y-auto">
+        <div data-lenis-prevent className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 sm:p-6 overflow-y-auto">
           <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden my-auto border border-gray-100">
             <div className="flex justify-between items-center px-6 py-5 border-b border-gray-100 shrink-0">
               <h2 className="text-xl font-medium">{editingId ? 'Edit Article' : 'New Article'}</h2>
@@ -321,7 +332,7 @@ export default function AdminNews() {
                 <X size={20} />
               </button>
             </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
+            <form onSubmit={handleSubmit(onSubmit)} data-lenis-prevent className="p-6 space-y-4 overflow-y-auto flex-1 custom-scrollbar">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
                 <input 
