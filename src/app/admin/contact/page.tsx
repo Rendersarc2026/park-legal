@@ -14,25 +14,50 @@ const noScript = (value: string | undefined): boolean => {
   return !/<script\b[^>]*>([\s\S]*?)<\/script>/gim.test(value);
 };
 
-const phoneRegex = /^\+91\s?[0-9\s\-()]{10,20}$/;
+const phoneRegex = /^\+91\s[0-9]{10}$/;
+
+const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const allowed = [
+    'Backspace', 'Delete', 'Tab', 'Escape', 'Enter',
+    'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+    'Home', 'End'
+  ];
+  if (allowed.includes(e.key) || e.ctrlKey || e.metaKey) {
+    return;
+  }
+  if (e.key === '+' || e.key === ' ') {
+    return;
+  }
+  if (!/^[0-9]$/.test(e.key)) {
+    e.preventDefault();
+  }
+};
 
 const formatPhoneInput = (val: string): string => {
   if (!val) return '';
-  if (val.startsWith('+')) {
-    return val;
+  if (val.trim() === '') return '';
+  
+  const digitsOnly = val.replace(/\D/g, '');
+  if (!digitsOnly) {
+    return val.startsWith('+') ? '+' : '';
   }
-  if (val.startsWith('91')) {
-    if (val.length > 2 && val[2] !== ' ') {
-      return '+91 ' + val.slice(2);
-    }
-    return '+' + val;
+  
+  let localDigits = digitsOnly;
+  if (digitsOnly.startsWith('91')) {
+    localDigits = digitsOnly.slice(2);
   }
-  return '+91 ' + val;
+  
+  const trimmedLocalDigits = localDigits.slice(0, 10);
+  return `+91 ${trimmedLocalDigits}`;
 };
 
 const phoneValidation = yup.string()
-  .matches(phoneRegex, 'Phone number must start with +91')
-  .test('exactly-10-digits', 'Phone number must have exactly 10 digits after the country code', (value) => {
+  .matches(phoneRegex, 'Phone number must start with +91 followed by 10 digits')
+  .test('no-letters', 'Phone number cannot contain letters', (value) => {
+    if (!value) return true;
+    return !/[a-zA-Z]/.test(value);
+  })
+  .test('exactly-10-digits', 'Phone number must have exactly 10 digits after +91', (value) => {
     if (!value) return false;
     const rawNumber = value.replace(/^\+91\s?/, '');
     const digitsOnly = rawNumber.replace(/\D/g, '');
@@ -228,15 +253,14 @@ export default function AdminContact() {
               <input
                 {...register('phone')}
                 disabled={!isEditing}
+                type="tel"
+                onKeyDown={handlePhoneKeyDown}
                 onChange={(e) => {
                   const val = e.target.value;
                   const formatted = formatPhoneInput(val);
-                  if (formatted !== val) {
-                    e.target.value = formatted;
-                  }
+                  e.target.value = formatted;
                   register('phone').onChange(e);
                 }}
-                type="text"
                 className={`w-full px-4 py-2.5 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.phone ? 'border-red-500' : 'border-gray-200'}`}
                 placeholder="+91 99959 05111"
               />
@@ -338,15 +362,14 @@ export default function AdminContact() {
                       <input
                         {...register(`directContacts.${i}.phone` as const)}
                         disabled={!isEditing}
+                        type="tel"
+                        onKeyDown={handlePhoneKeyDown}
                         onChange={(e) => {
                           const val = e.target.value;
                           const formatted = formatPhoneInput(val);
-                          if (formatted !== val) {
-                            e.target.value = formatted;
-                          }
+                          e.target.value = formatted;
                           register(`directContacts.${i}.phone` as const).onChange(e);
                         }}
-                        type="text"
                         placeholder="Phone"
                         className={`w-full px-3 py-2 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary transition-all disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed ${errors.directContacts?.[i]?.phone ? 'border-red-500' : 'border-gray-200'}`}
                       />

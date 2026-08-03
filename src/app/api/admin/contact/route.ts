@@ -11,11 +11,15 @@ const noScript = (value: string | undefined): boolean => {
   return !/<script\b[^>]*>([\s\S]*?)<\/script>/gim.test(value);
 };
 
-const phoneRegex = /^\+91\s?[0-9\s\-()]{10,20}$/;
+const phoneRegex = /^\+91\s[0-9]{10}$/;
 
 const phoneValidation = yup.string()
-  .matches(phoneRegex, 'Phone number must start with +91')
-  .test('exactly-10-digits', 'Phone number must have exactly 10 digits after the country code', (value) => {
+  .matches(phoneRegex, 'Phone number must start with +91 followed by 10 digits')
+  .test('no-letters', 'Phone number cannot contain letters', (value) => {
+    if (!value) return true;
+    return !/[a-zA-Z]/.test(value);
+  })
+  .test('exactly-10-digits', 'Phone number must have exactly 10 digits after +91', (value) => {
     if (!value) return false;
     const rawNumber = value.replace(/^\+91\s?/, '');
     const digitsOnly = rawNumber.replace(/\D/g, '');
