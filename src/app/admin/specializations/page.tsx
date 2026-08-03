@@ -191,9 +191,9 @@ export default function AdminSpecializations() {
             <table className="w-full text-left min-w-[800px]">
               <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
                 <tr>
-                  <th className="px-6 py-4 w-64 bg-gray-50">Label</th>
-                  <th className="px-6 py-4 bg-gray-50">Description</th>
-                  <th className="px-6 py-4 text-right w-32 bg-gray-50">Actions</th>
+                  <th className="px-6 py-4 w-64">Label</th>
+                  <th className="px-6 py-4">Description</th>
+                  <th className="px-6 py-4 text-right w-32">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">

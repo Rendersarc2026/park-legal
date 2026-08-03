@@ -180,13 +180,13 @@ export default function AdminTestimonials() {
           <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full text-left min-w-[600px]">
               <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
-              <tr>
-                <th className="px-6 py-4 bg-gray-50">Quote</th>
-                <th className="px-6 py-4 w-32 bg-gray-50">Author</th>
-                <th className="px-6 py-4 w-32 bg-gray-50">Stars</th>
-                <th className="px-6 py-4 text-right w-32 bg-gray-50">Actions</th>
-              </tr>
-            </thead>
+                <tr>
+                  <th className="px-6 py-4">Quote</th>
+                  <th className="px-6 py-4 w-32">Author</th>
+                  <th className="px-6 py-4 w-32">Stars</th>
+                  <th className="px-6 py-4 text-right w-32">Actions</th>
+                </tr>
+              </thead>
             <tbody className="divide-y divide-gray-100">
               {testimonials.map((item) => (
                 <tr key={item.id} className="hover:bg-gray-50 transition-colors">

@@ -256,13 +256,13 @@ export default function AdminNews() {
           <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full text-left min-w-[600px]">
               <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-100">
-              <tr>
-                <th className="px-6 py-4 bg-gray-50">Title</th>
-                <th className="px-6 py-4 bg-gray-50">Date</th>
-                <th className="px-6 py-4 bg-gray-50">Category</th>
-                <th className="px-6 py-4 text-right bg-gray-50">Actions</th>
-              </tr>
-            </thead>
+                <tr>
+                  <th className="px-6 py-4">Title</th>
+                  <th className="px-6 py-4">Date</th>
+                  <th className="px-6 py-4">Category</th>
+                  <th className="px-6 py-4 text-right">Actions</th>
+                </tr>
+              </thead>
             <tbody className="divide-y divide-gray-100">
               {articles.map((article) => (
                 <tr key={article.id} className="hover:bg-gray-50 transition-colors">
@@ -364,30 +364,44 @@ export default function AdminNews() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Image</label>
+                <input type="hidden" {...register('imageUrl')} />
+                
                 {imageUrl && (
-                  <div className="relative aspect-[16/9] w-full mb-4 rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
+                  <div className="relative aspect-[16/9] w-full mb-3 rounded-xl overflow-hidden border border-gray-200 bg-gray-50">
                     <Image 
                       src={imageUrl} 
                       alt="Preview" 
                       fill
                       className="object-contain"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setValue('imageUrl', '', { shouldValidate: true })}
+                      className="absolute top-3 right-3 p-2 bg-red-600 hover:bg-red-700 text-white rounded-full shadow-md transition-all duration-200 hover:scale-110 z-10"
+                      title="Remove image"
+                      aria-label="Remove image"
+                    >
+                      <X size={16} />
+                    </button>
                   </div>
                 )}
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center">
-                  <input 
-                    {...register('imageUrl')}
-                    type="text" 
-                    readOnly
-                    className={`flex-1 px-4 py-2 border rounded-xl bg-gray-50 cursor-not-allowed focus:outline-none ${errors.imageUrl ? 'border-red-500' : 'border-gray-200'}`} 
-                    placeholder="Click 'Upload File' to select an image" 
-                  />
-                  <label className={`cursor-pointer px-4 py-2 border border-dashed rounded-xl transition-colors whitespace-nowrap ${uploading ? 'opacity-50 pointer-events-none bg-gray-100 border-gray-300' : 'bg-gray-50 border-gray-300 hover:bg-gray-100'}`}>
-                    <span className="text-sm text-gray-600">{uploading ? 'Uploading...' : 'Upload File'}</span>
+                
+                <div className="flex items-center gap-3">
+                  <label className={`cursor-pointer px-4 py-2.5 border border-dashed rounded-xl transition-all whitespace-nowrap flex items-center gap-2 ${uploading ? 'opacity-50 pointer-events-none bg-gray-100 border-gray-300' : 'bg-gray-50 border-gray-300 hover:bg-gray-100 hover:border-gray-400'}`}>
+                    <span className="text-sm font-medium text-gray-700">{uploading ? 'Uploading image...' : imageUrl ? 'Change Image' : 'Upload Image'}</span>
                     <input type="file" className="hidden" onChange={handleFileUpload} accept="image/*" disabled={uploading} />
                   </label>
+                  {imageUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setValue('imageUrl', '', { shouldValidate: true })}
+                      className="px-4 py-2.5 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-xl transition-colors font-medium flex items-center gap-1.5"
+                    >
+                      <X size={16} /> Remove
+                    </button>
+                  )}
                 </div>
-                {errors.imageUrl && <p className="text-red-500 text-xs mt-1">{errors.imageUrl.message}</p>}
+                {errors.imageUrl && <p className="text-red-500 text-xs mt-1.5">{errors.imageUrl.message}</p>}
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Excerpt (Short Summary)</label>

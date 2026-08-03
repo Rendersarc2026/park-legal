@@ -199,7 +199,15 @@ html.lenis, html.lenis body {
 .admin-dark .border-r,
 .admin-dark .divide-gray-50,
 .admin-dark .divide-gray-100,
-.admin-dark .divide-y > * + * {
+.admin-dark .divide-y > * + *,
+.admin-dark [class*="divide-y"] > *,
+.admin-dark .divide-y > :not([hidden]) ~ :not([hidden]),
+.admin-dark table,
+.admin-dark thead,
+.admin-dark tbody,
+.admin-dark tr,
+.admin-dark th,
+.admin-dark td {
   border-color: #1f2937 !important;
 }
 
