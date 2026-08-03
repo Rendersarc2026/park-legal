@@ -77,7 +77,7 @@ export default function NewsArticles({ articles }: { articles: Article[] }) {
         </div>
 
         <div className="relative">
-          <div className="overflow-hidden -mx-4 px-4">
+          <div className="overflow-hidden -mx-4 px-4 -my-6 py-6">
             <motion.div 
               className="flex gap-8"
               animate={{ x: `calc(-${currentIndex * (100 / 3.1)}%)` }}
@@ -90,12 +90,12 @@ export default function NewsArticles({ articles }: { articles: Article[] }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ y: -10 }}
+                  whileHover={{ y: -8 }}
                   whileTap={{ scale: 0.985 }}
                   className="min-w-[calc(100%-2rem)] sm:min-w-[calc(50%-1rem)] lg:min-w-[calc(33.333%-1.5rem)] group cursor-pointer will-change-transform"
                   onClick={() => handleArticleClick(article)}
                 >
-                  <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[2.5rem] mb-8 shadow-sm group-hover:shadow-2xl group-hover:shadow-brand-primary/10 transition-all duration-500 bg-gray-50 border border-gray-100">
+                  <div className="relative aspect-[16/10] w-full overflow-hidden rounded-[2.5rem] mb-6 shadow-sm group-hover:shadow-xl group-hover:shadow-brand-primary/10 transition-all duration-300 bg-gray-50 border border-gray-100">
                     <Image 
                       src={(article.imageUrl?.startsWith('/') || article.imageUrl?.startsWith('http')) 
                         ? article.imageUrl 
@@ -103,7 +103,7 @@ export default function NewsArticles({ articles }: { articles: Article[] }) {
                       alt={article.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-1000 ease-out"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
                     />
                     <div className="absolute top-6 left-6">
                       <span className="px-4 py-1.5 bg-white/95 backdrop-blur-md rounded-full text-[10px] uppercase tracking-widest font-medium text-brand-primary border border-white/20 shadow-sm">
@@ -112,7 +112,7 @@ export default function NewsArticles({ articles }: { articles: Article[] }) {
                     </div>
                   </div>
 
-                  <div className="space-y-4 px-2">
+                  <div className="space-y-3 px-2">
                     <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-[#999999] font-light">
                       <Calendar className="w-3 h-3 text-brand-primary/60" />
                       {article.date}
@@ -123,8 +123,9 @@ export default function NewsArticles({ articles }: { articles: Article[] }) {
                     <p className="text-[#666666] font-light leading-relaxed line-clamp-2 text-sm">
                       {article.excerpt}
                     </p>
-                    <div className="pt-2 flex items-center gap-2 text-xs text-brand-primary font-medium opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-500">
-                      Read Full Article <ArrowRight className="w-3 h-3" />
+                    <div className="pt-1 flex items-center gap-2 text-xs text-brand-primary font-medium transition-colors duration-300">
+                      <span>Read Full Article</span>
+                      <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1.5 transition-transform duration-300" />
                     </div>
                   </div>
                 </motion.article>

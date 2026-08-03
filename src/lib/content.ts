@@ -143,7 +143,7 @@ export const getSpecializations = cache(async (): Promise<SpecializationData[]> 
   try {
     return await prisma.specialization.findMany({
       where: { isActive: true },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'desc' },
       select: { id: true, label: true, description: true, details: true },
     });
   } catch (err) {

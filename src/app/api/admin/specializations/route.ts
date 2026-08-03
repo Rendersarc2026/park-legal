@@ -32,7 +32,7 @@ export async function GET(request: Request) {
       const [specializations, total] = await Promise.all([
         prisma.specialization.findMany({
           where: { isActive: true },
-          orderBy: { createdAt: 'asc' },
+          orderBy: { createdAt: 'desc' },
           skip: (page - 1) * limit,
           take: limit,
         }),
@@ -53,7 +53,7 @@ export async function GET(request: Request) {
 
     const specializations = await prisma.specialization.findMany({
       where: { isActive: true },
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: 'desc' },
     });
 
     return NextResponse.json(
