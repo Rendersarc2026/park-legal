@@ -77,7 +77,7 @@ export default function NewsArticles({ articles }: { articles: Article[] }) {
         </div>
 
         <div className="relative">
-          <div className="overflow-hidden -mx-4 px-4 -my-6 py-6">
+          <div className="overflow-hidden -mx-4 px-4 pt-6 pb-10 -mb-10">
             <motion.div 
               className="flex gap-8"
               animate={{ x: `calc(-${currentIndex * (100 / 3.1)}%)` }}
@@ -90,7 +90,7 @@ export default function NewsArticles({ articles }: { articles: Article[] }) {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.6, delay: index * 0.1 }}
-                  whileHover={{ y: -8 }}
+                  whileHover={{ y: -6 }}
                   whileTap={{ scale: 0.985 }}
                   className="min-w-[calc(100%-2rem)] sm:min-w-[calc(50%-1rem)] lg:min-w-[calc(33.333%-1.5rem)] group cursor-pointer will-change-transform"
                   onClick={() => handleArticleClick(article)}
