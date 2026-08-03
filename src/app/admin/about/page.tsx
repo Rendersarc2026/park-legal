@@ -62,14 +62,16 @@ export default function AdminAbout() {
 
   const fetchAbout = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/about');
+      const res = await fetch('/api/admin/about', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         const formatted = {
           description: data.description || '',
           stats: data.stats || [],
           // Map string array to object array for the form
-          points: (data.points || []).map((p: { text: string }) => ({ text: p.text || p }))
+          points: (data.points || []).map((p: string | { text: string }) => ({
+            text: typeof p === 'string' ? p : (p.text || '')
+          }))
         };
         reset(formatted);
         setOriginalData(formatted);
@@ -99,9 +101,18 @@ export default function AdminAbout() {
         body: JSON.stringify(payload),
       });
       if (res.ok) {
-        toast.success('About section updated successfully!');
+        const savedData = await res.json();
+        const formatted = {
+          description: savedData.description || '',
+          stats: savedData.stats || [],
+          points: (savedData.points || []).map((p: string | { text: string }) => ({
+            text: typeof p === 'string' ? p : (p.text || '')
+          }))
+        };
+        reset(formatted);
+        setOriginalData(formatted);
         setIsEditing(false);
-        fetchAbout();
+        toast.success('About section updated successfully!');
       } else {
         const errorData = await res.json();
         toast.error(errorData.error || 'Failed to save changes');

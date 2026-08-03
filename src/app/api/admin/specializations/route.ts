@@ -27,7 +27,10 @@ export async function GET() {
       orderBy: { createdAt: 'asc' },
     });
 
-    return NextResponse.json({ specializations });
+    return NextResponse.json(
+      { specializations },
+      { headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' } }
+    );
   } catch (err) {
     return serverError('Failed to fetch specializations:', err);
   }

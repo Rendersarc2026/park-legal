@@ -43,13 +43,18 @@ export async function GET(request: Request) {
       prisma.article.count({ where: { isActive: true } }),
     ]);
 
-    return NextResponse.json({
-      articles,
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    });
+    return NextResponse.json(
+      {
+        articles,
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+      {
+        headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' },
+      }
+    );
   } catch (err) {
     return serverError('Failed to fetch articles:', err);
   }

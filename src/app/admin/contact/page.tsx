@@ -94,7 +94,7 @@ export default function AdminContact() {
 
   const fetchContact = useCallback(async () => {
     try {
-      const res = await fetch('/api/admin/contact');
+      const res = await fetch('/api/admin/contact', { cache: 'no-store' });
       if (res.ok) {
         const data = await res.json();
         const formatted = {
@@ -126,9 +126,18 @@ export default function AdminContact() {
         body: JSON.stringify(data),
       });
       if (res.ok) {
-        toast.success('Contact details updated successfully!');
+        const savedData = await res.json();
+        const formatted = {
+          phone: savedData.phone || defaultContact.phone,
+          email: savedData.email || defaultContact.email,
+          address: savedData.address || defaultContact.address,
+          directionsLink: savedData.directionsLink || defaultContact.directionsLink,
+          directContacts: savedData.directContacts || defaultContact.directContacts
+        };
+        reset(formatted);
+        setOriginalData(formatted);
         setIsEditing(false);
-        fetchContact();
+        toast.success('Contact details updated successfully!');
       } else {
         const errorData = await res.json();
         toast.error(errorData.error || 'Failed to save contact details');

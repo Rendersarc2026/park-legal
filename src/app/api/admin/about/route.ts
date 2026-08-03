@@ -32,7 +32,9 @@ export async function GET() {
 
   try {
     const about = await prisma.aboutSection.findFirst({ where: { isActive: true } });
-    return NextResponse.json(about ?? DEFAULT_ABOUT);
+    return NextResponse.json(about ?? DEFAULT_ABOUT, {
+      headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' },
+    });
   } catch (err) {
     return serverError('Failed to fetch about section:', err);
   }
@@ -48,16 +50,24 @@ export async function POST(request: Request) {
       stripUnknown: true,
     });
 
-    const existing = await prisma.aboutSection.findFirst();
+    const existing = await prisma.aboutSection.findFirst({ where: { isActive: true } });
 
     const saved = existing
-      ? await prisma.aboutSection.update({ where: { id: existing.id }, data })
-      : await prisma.aboutSection.create({ data });
+      ? await prisma.aboutSection.update({
+          where: { id: existing.id },
+          data: { ...data, isActive: true },
+        })
+      : await prisma.aboutSection.create({
+          data: { ...data, isActive: true },
+        });
 
-    revalidateContent('/about');
-    return NextResponse.json(saved);
+    revalidateContent('/', '/about');
+    return NextResponse.json(saved, {
+      headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' },
+    });
   } catch (err) {
     if (err instanceof yup.ValidationError) return badRequest(err.errors[0]);
     return serverError('Failed to update about section:', err);
   }
 }
+

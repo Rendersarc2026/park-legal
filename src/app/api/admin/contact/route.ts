@@ -54,7 +54,9 @@ export async function GET() {
 
     if (!contact) return notFound('Contact details not found');
 
-    return NextResponse.json(contact);
+    return NextResponse.json(contact, {
+      headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' },
+    });
   } catch (err) {
     return serverError('Failed to fetch contact details:', err);
   }
@@ -70,15 +72,22 @@ export async function POST(request: Request) {
       stripUnknown: true,
     });
 
-    const existing = await prisma.contactDetails.findFirst();
+    const existing = await prisma.contactDetails.findFirst({ where: { isActive: true } });
 
     const saved = existing
-      ? await prisma.contactDetails.update({ where: { id: existing.id }, data })
-      : await prisma.contactDetails.create({ data });
+      ? await prisma.contactDetails.update({
+          where: { id: existing.id },
+          data: { ...data, isActive: true },
+        })
+      : await prisma.contactDetails.create({
+          data: { ...data, isActive: true },
+        });
 
     // The footer renders contact details on every public page.
     revalidateContent('/', '/about', '/contact');
-    return NextResponse.json(saved);
+    return NextResponse.json(saved, {
+      headers: { 'Cache-Control': 'no-store, max-age=0, must-revalidate' },
+    });
   } catch (err) {
     if (err instanceof yup.ValidationError) return badRequest(err.errors[0]);
     return serverError('Failed to save contact details:', err);
