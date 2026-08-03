@@ -63,17 +63,14 @@ export default function AdminLogin() {
 
   return (
     <div className="admin-dark min-h-screen flex items-center justify-center bg-gray-50 px-4">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-gray-100 relative overflow-hidden">
-        {loading && (
-          <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center gap-3 transition-opacity">
-            <Loader2 className="w-8 h-8 text-brand-primary animate-spin" />
-            <p className="text-sm font-medium text-gray-700">Signing in & redirecting...</p>
-          </div>
-        )}
-
+      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
         <div className="flex justify-center mb-6">
           <div className="w-16 h-16 bg-brand-primary/10 rounded-full flex items-center justify-center text-brand-primary">
-            <Lock className="w-8 h-8" />
+            {loading ? (
+              <Loader2 className="w-8 h-8 animate-spin" />
+            ) : (
+              <Lock className="w-8 h-8" />
+            )}
           </div>
         </div>
         <h2 className="text-3xl font-light text-center text-[#333333] mb-8">Admin Panel</h2>
@@ -116,11 +113,11 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading || error.toLowerCase().includes('too many failed attempts')}
-            className="w-full bg-gray-900 text-white py-4 rounded-xl font-medium hover:bg-black transition-all shadow-lg shadow-gray-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full bg-gray-900 text-white py-4 rounded-xl font-medium hover:bg-black transition-all shadow-lg shadow-gray-200 disabled:opacity-75 disabled:cursor-not-allowed flex items-center justify-center gap-2.5"
           >
             {loading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-5 h-5 animate-spin text-white" />
                 <span>Signing in...</span>
               </>
             ) : (
